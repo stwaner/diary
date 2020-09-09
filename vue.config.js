@@ -1,13 +1,45 @@
 const path = require('path')
 const UglifyPlugin = require('uglifyjs-webpack-plugin')
 
+function resolve(dir) {
+  return path.join(__dirname, dir)
+}
+const isProd = process.env.NODE_ENV === 'production'
+
 module.exports = {
-  publicPath: './', // 基本路径
-  outputDir: 'dist', // 输出文件目录
+  publicPath: isProd ? './' : '/',
+  outputDir: 'dist', // 打包文件输出目录
   lintOnSave: false, // eslint-loader 是否在保存的时候检查
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
   // webpack配置
   chainWebpack: (config) => {
+    config.resolve.alias.set('@$', resolve('src'))
+    const svgRule = config.module.rule('svg')
+    svgRule.uses.clear()
+    svgRule
+      .oneOf('inline')
+      .resourceQuery(/inline/)
+      .use('vue-svg-icon-loader')
+      .loader('vue-svg-icon-loader')
+      .end()
+      .end()
+      .oneOf('external')
+      .use('file-loader')
+      .loader('file-loader')
+      .options({
+          name: 'assets/[name].[hash:8].[ext]'
+      })
+    // if prod is on
+    // assets require on cdn
+    if (isProd) {
+      console.log('当前环境为生产环境production')
+      config.plugin('html').tap(args => {
+        args[0].cdn = assetsCDN
+        return args
+      })
+    } else {
+      console.log('当前为development')
+    }
   },
   configureWebpack: (config) => {
     if (process.env.NODE_ENV === 'production') {
@@ -68,6 +100,9 @@ module.exports = {
     extract: true, // 是否使用css分离插件 ExtractTextPlugin
     sourceMap: false, // 开启 CSS source maps?
     loaderOptions: {
+      sass: {
+        prependData: `@import "~@/assets/css/_variable.scss";`
+      },
       css: {}, // 这里的选项会传递给 css-loader
       postcss: {} // 这里的选项会传递给 postcss-loader
     }, // css预设器配置项 详见https://cli.vuejs.org/zh/config/#css-loaderoptions
