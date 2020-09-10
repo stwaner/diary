@@ -88,8 +88,6 @@ module.exports = {
       resolve: {
         alias: {
           '@': path.resolve(__dirname, './src'),
-          '@c': path.resolve(__dirname, './src/components'),
-          '@p': path.resolve(__dirname, './src/pages')
         } // 别名配置
       }
     })
@@ -112,26 +110,24 @@ module.exports = {
   pwa: {}, // PWA 插件相关配置 see https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-pwa
   // webpack-dev-server 相关配置
   devServer: {
-    open: process.platform === 'darwin',
+    open: true,
     host: 'localhost',
     port: 8080, // 端口
-    https: false, // 启用https
     // 错误、警告在页面弹出
     overlay: {
       warnings: true,
       errors: true
     },
     // 代理转发配置，用于调试环境
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://www.baidu.com/api',
-    //     changeOrigin: true, // 允许websockets跨域
-    //     // ws: true,
-    //     pathRewrite: {
-    //       '^/api': ''
-    //     }
-    //   }
-    // }
+    proxy: {
+      '/user': {
+        target: 'http://daily.zhuyelong.cn/daily',
+        changeOrigin: true, // 允许websockets跨域
+        pathRewrite: {
+          '^/user': '/user'
+        }
+      }
+    }
   },
   // 第三方插件配置
   pluginOptions: {}
