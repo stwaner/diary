@@ -2,7 +2,7 @@ import { request } from '@/utils/request'
 
 const userApi = {
   // 测试接口
-  findAll: '/user/findAll'
+  findAll: '/api/user/findAll'
 }
 
 export function findAll () {

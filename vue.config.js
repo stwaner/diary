@@ -110,21 +110,25 @@ module.exports = {
   pwa: {}, // PWA 插件相关配置 see https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-pwa
   // webpack-dev-server 相关配置
   devServer: {
-    open: true,
+    // open: true,
     host: 'localhost',
-    port: 8080, // 端口
+    port: 8888, // 端口
+    hot: true, // 开启热更新
+    https: false, // 是否开启https模式
     // 错误、警告在页面弹出
     overlay: {
       warnings: true,
       errors: true
     },
-    // 代理转发配置，用于调试环境
+    // 请求代理服务器 代理转发配置，用于调试环境
     proxy: {
-      '/user': {
-        target: 'http://daily.zhuyelong.cn/daily',
-        changeOrigin: true, // 允许websockets跨域
-        pathRewrite: {
-          '^/user': '/user'
+      '/api': { //带上api前缀的
+        target: 'http://daily.zhuyelong.cn', //代理目标地址
+        changeOrigin: true,
+        logLevel: 'debug', // 控制台打印真是请求地址
+        // secure: false, //如果是https，需要加此参数
+        pathRewrite: { // 在发出请求后将/api替换为''空值，这样不影响接口请求
+          '^/api': ''
         }
       }
     }

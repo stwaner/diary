@@ -3,8 +3,7 @@ import router from '../router/index'
 export function request(options) {
   return new Promise((resolve, reject) => {
     const instance = axios.create({  //instance创建一个axios实例，可以自定义配置，可在 axios文档中查看详情
-      baseURL: process.env.VUE_APP_BASE_URL,
-      // baseURL: 'http://127.0.0.1:3000/',
+      // baseURL: process.env.VUE_APP_BASE_URL,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
       },
