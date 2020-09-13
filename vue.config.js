@@ -9,10 +9,18 @@ const isProd = process.env.NODE_ENV === 'production'
 module.exports = {
   publicPath: isProd ? './' : '/',
   outputDir: 'dist', // 打包文件输出目录
-  lintOnSave: false, // eslint-loader 是否在保存的时候检查
+  lintOnSave: isProd, // eslint-loader 是否在保存的时候检查
+  productionSourceMap: false, // 生产环境是否生成 sourceMap 文件
+  // runtimeCompiler: true,
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
   // webpack配置
   chainWebpack: (config) => {
+    // 对vue-cli内部的 webpack 配置进行更细粒度的修改
+    config.optimization.minimizer('terser').tap((args) => {
+      // 去除生产环境console
+      args[0].terserOptions.compress.drop_console = true
+      return args
+    })
     config.resolve.alias.set('@$', resolve('src'))
     const svgRule = config.module.rule('svg')
     svgRule.uses.clear()
@@ -51,7 +59,7 @@ module.exports = {
         splitChunks: {
           chunks: 'all',
           maxInitialRequests: Infinity,
-          minSize: 20000,
+          minSize: 20000, // 依赖包超过20000bit将被单独打包
           cacheGroups: {
             vendor: {
               test: /[\\/]node_modules[\\/]/,
@@ -92,19 +100,20 @@ module.exports = {
       }
     })
   },
-  productionSourceMap: false, // 生产环境是否生成 sourceMap 文件
   // css相关配置
   css: {
     extract: true, // 是否使用css分离插件 ExtractTextPlugin
     sourceMap: false, // 开启 CSS source maps?
+    requireModuleExtension: false, // 启用 CSS modules for all css / pre-processor files.
+    // css预设器配置项 详见https://cli.vuejs.org/zh/config/#css-loaderoptions
     loaderOptions: {
       sass: {
+        // sass-loader v7之前使用data:''，之后使用prependData:''
         prependData: `@import "~@/assets/css/_variable.scss";`
       },
       css: {}, // 这里的选项会传递给 css-loader
       postcss: {} // 这里的选项会传递给 postcss-loader
-    }, // css预设器配置项 详见https://cli.vuejs.org/zh/config/#css-loaderoptions
-    modules: false // 启用 CSS modules for all css / pre-processor files.
+    }
   },
   parallel: require('os').cpus().length > 1, // 是否为 Babel 或 TypeScript 使用 thread-loader。该选项在系统的 CPU 有多于一个内核时自动启用，仅作用于生产构建。
   pwa: {}, // PWA 插件相关配置 see https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-pwa
@@ -112,7 +121,7 @@ module.exports = {
   devServer: {
     // open: true,
     host: 'localhost',
-    port: 8888, // 端口
+    port: 8080, // 端口
     hot: true, // 开启热更新
     https: false, // 是否开启https模式
     // 错误、警告在页面弹出
