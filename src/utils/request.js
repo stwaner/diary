@@ -1,5 +1,6 @@
 import axios from 'axios';//引入axios
 import router from '../router/index'
+import { Message } from 'element-ui';
 export function request(options) {
   return new Promise((resolve, reject) => {
     const instance = axios.create({  //instance创建一个axios实例，可以自定义配置，可在 axios文档中查看详情
@@ -12,9 +13,9 @@ export function request(options) {
     instance(options)
       .then(response => {
         //then 请求成功之后进行什么操作
-        resolve(response);//把请求到的数据发到引用请求的地方
-        if(response.data.code == "1001"){
-          alert("登陆超时, 请重新登陆...")
+        resolve(response.data);//把请求到的数据发到引用请求的地方
+        if(response.data.code == "100"){
+          Message.error('登陆超时, 请重新登陆');
           setTimeout(()=>{
             router.push({
               path: '/login',

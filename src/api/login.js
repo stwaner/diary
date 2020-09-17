@@ -1,17 +1,18 @@
 import { request } from '@/utils/request'
 
 const userApi = {
-  login: '/user/login', // 登录
-  register: '/user/reg', // 注册
+  login: '/api/user/login', // 登录
+  register: '/api/user/reg', // 注册
   findAll: '/api/user/findAll' // 测试接口
 }
 
-export function login () {
+export function login (params) {
   return request({
     xhrFields: { withCredentials: true },
     crossDomain: true,
     url: userApi.login,
-    method: 'get'
+    method: 'get',
+    params: params
   })
 }
 
