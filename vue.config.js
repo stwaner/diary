@@ -41,10 +41,10 @@ module.exports = {
     // assets require on cdn
     if (isProd) {
       console.log('当前环境为生产环境production')
-      config.plugin('html').tap(args => {
-        args[0].cdn = assetsCDN
-        return args
-      })
+      // config.plugin('html').tap(args => {
+      //   args[0].cdn = assetsCDN
+      //   return args
+      // })
     } else {
       console.log('当前为development')
     }
@@ -73,16 +73,21 @@ module.exports = {
             }
           }
         },
-        minimizer: [new UglifyPlugin({
-          uglifyOptions: {
-            compress: {
-              warnings: false,
-              drop_console: true, // console
-              drop_debugger: false,
-              pure_funcs: ['console.log'] // 移除console
+        minimizer: [
+          new UglifyPlugin({
+            uglifyOptions: {
+              uglifyOptions: {
+                warnings: false,
+                  compress: {
+                    drop_debugger: true,
+                    drop_console: true,
+                  },
+              },
+              sourceMap: false,
+              parallel: true,
             }
-          }
-        })]
+          })
+        ]
       }
       Object.assign(config, {
         optimization
@@ -121,7 +126,7 @@ module.exports = {
   devServer: {
     // open: true,
     host: 'localhost',
-    port: 8080, // 端口
+    port: 8081, // 端口
     hot: true, // 开启热更新
     https: false, // 是否开启https模式
     // 错误、警告在页面弹出

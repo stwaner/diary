@@ -1,31 +1,38 @@
 const routes = [
   {
     path: '/',
-    redirect: '/login'
+    redirect: '/user'
   }, {
-    path: '/login',
-    name: 'Login',
-    // component: resolve => require(['@/views/user/Login.vue'], resolve),
-    component: () => import(/* webpackChunkName: "user" */ '@/views/user/Login.vue'),
-    meta: {title: "登录", keepAlive: true},
-  },{
-    path: '/register',
-    name: 'Register',
-    component: () => import(/* webpackChunkName: "user" */ '@/views/user/Register.vue'),
-    meta: {title: "注册", keepAlive: true},
-  },{
+    path: '/user',
+    name: 'Main',
+    component: resolve => require(['@/views/user/Main.vue'], resolve),
+    redirect: '/user/login',
+    children: [
+      {
+        path: 'login',
+        name: 'Login',
+        component: resolve => require(['@/views/user/Login.vue'], resolve),
+        meta: {title: '登录', keepAlive: true}
+      }, {
+        path: 'register',
+        name: 'Register',
+        component: resolve => require(['@/views/user/Register.vue'], resolve),
+        meta: {title: '注册', keepAlive: true}
+      }
+    ]
+  }, {
     path: '/home',
     name: 'Home',
-    component: () => import(/* webpackChunkName: "user" */ '@/views/Home.vue'),
-    meta: {title: "首页", keepAlive: true},
-  },  {
+    component: () => import(/* webpackChunkName: 'user' */ '@/views/Home.vue'),
+    meta: {title: '首页', keepAlive: true}
+  }, {
     path: '/404',
-    meta: {title: "404", keepAlive: true},
     component: resolve => require(['@/views/exception/404.vue'], resolve),
+    meta: {title: '404', keepAlive: true}
   }, {
     path: '*',
-    meta: {title: "404", keepAlive: true},
     component: resolve => require(['@/views/exception/404.vue'], resolve),
+    meta: {title: '404', keepAlive: true}
   }
 ]
 

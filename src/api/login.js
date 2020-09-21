@@ -16,6 +16,16 @@ export function login (params) {
   })
 }
 
+export function register (params) {
+  return request({
+    xhrFields: { withCredentials: true },
+    crossDomain: true,
+    url: userApi.register,
+    method: 'get',
+    params: params
+  })
+}
+
 export function findAll () {
   return request({
     xhrFields: { withCredentials: true },
@@ -24,5 +34,3 @@ export function findAll () {
     method: 'get'
   })
 }
-
-
