@@ -26,6 +26,11 @@ const routes = [
     component: () => import(/* webpackChunkName: 'user' */ '@/views/Home.vue'),
     meta: {title: '首页', keepAlive: true}
   }, {
+    path: '/test',
+    name: 'TipTap',
+    component: () => import(/* webpackChunkName: 'user' */ '@/test/TipTap.vue'),
+    meta: {title: '测试', keepAlive: true}
+  },  {
     path: '/404',
     component: resolve => require(['@/views/exception/404.vue'], resolve),
     meta: {title: '404', keepAlive: true}

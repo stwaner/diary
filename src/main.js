@@ -3,8 +3,10 @@ import ElementUI from 'element-ui'
 import App from './App.vue'
 import axios from 'axios'
 import router from './router'
-import './assets/css/base.css'
+// import './assets/css/base.css'
+// import './assets/css/layout.css'
 import 'element-ui/lib/theme-chalk/index.css'
+// import './assets/css/default.css' // 为何不生效
 // import element from './element/index'
 // Vue.use(element)
 

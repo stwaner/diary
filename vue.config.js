@@ -50,6 +50,15 @@ module.exports = {
     }
   },
   configureWebpack: (config) => {
+    // config.module.rules.push({
+    //   test: /\.vue$/,
+    //   use: [{
+    //     loader: 'iview-loader', // 解决ivew组件 忽略前缀i的问题
+    //     options: {
+    //       prefix: false
+    //     }
+    //   }]
+    // })
     if (process.env.NODE_ENV === 'production') {
       // 为生产环境修改配置...
       config.mode = 'production'
@@ -73,21 +82,21 @@ module.exports = {
             }
           }
         },
-        minimizer: [
-          new UglifyPlugin({
-            uglifyOptions: {
-              uglifyOptions: {
-                warnings: false,
-                  compress: {
-                    drop_debugger: true,
-                    drop_console: true,
-                  },
-              },
-              sourceMap: false,
-              parallel: true,
-            }
-          })
-        ]
+        // minimizer: [
+        //   new UglifyPlugin({
+        //     uglifyOptions: {
+        //       uglifyOptions: {
+        //         warnings: false,
+        //           compress: {
+        //             drop_debugger: true,
+        //             drop_console: true,
+        //           },
+        //       },
+        //       sourceMap: false,
+        //       parallel: true,
+        //     }
+        //   })
+        // ]
       }
       Object.assign(config, {
         optimization
