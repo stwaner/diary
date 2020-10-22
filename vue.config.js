@@ -135,7 +135,7 @@ module.exports = {
   devServer: {
     // open: true,
     host: 'localhost',
-    port: 8081, // 端口
+    port: 8888, // 端口
     hot: true, // 开启热更新
     https: false, // 是否开启https模式
     // 错误、警告在页面弹出
@@ -146,13 +146,13 @@ module.exports = {
     // 请求代理服务器 代理转发配置，用于调试环境
     proxy: {
       '/api': { //带上api前缀的
-        target: 'http://daily.zhuyelong.cn', //代理目标地址
+        target: 'http://139.199.126.30:8080/', //代理目标地址
         changeOrigin: true,
         logLevel: 'debug', // 控制台打印真是请求地址
         // secure: false, //如果是https，需要加此参数
-        pathRewrite: { // 在发出请求后将/api替换为''空值，这样不影响接口请求
-          '^/api': ''
-        }
+        // pathRewrite: { // 在发出请求后将/api替换为''空值，这样不影响接口请求
+        //   '^/api': ''
+        // }
       }
     }
   },

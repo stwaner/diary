@@ -1,10 +1,18 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import routes from '../router/router'
+import store from '../store/index'
 Vue.use(Router)
 
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  console.log(location, '------------location')
+  return originalPush.call(this, location).catch(err => err)
+}
+
 const router = new Router({
-  mode: 'history',
+  // mode: 'history',
+  mode: 'hash',
   routes: routes,
   scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {
@@ -23,6 +31,16 @@ router.beforeEach((to, from, next) => {
 	if (to.meta.title) {
     document.title = to.meta.title
   }
+  const token = store.state.token ? store.state.token : window.sessionStorage.getItem('token')
+  if (to.meta.requireAuth) {
+    if (!token) {
+      router.push({ path: 'login' })
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
   // const nextRoute = [ 'home' ];
   // let isLogin = global.isLogin;  // 是否登录
   // 未登录状态；当路由到nextRoute指定页时，跳转至login
@@ -38,12 +56,12 @@ router.beforeEach((to, from, next) => {
   //    router.push({ name: 'home' });
   //  }
   // }
-  next();
-});
+  next()
+})
 
 router.afterEach(route => {
   // document.title = route.meta.title;
-  window.scrollTo(0, 0);
-});
+  window.scrollTo(0, 0)
+})
 
 export default router

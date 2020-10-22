@@ -3,6 +3,7 @@ import ElementUI from 'element-ui'
 import App from './App.vue'
 import axios from 'axios'
 import router from './router'
+import store from './store'
 // import './assets/css/base.css'
 // import './assets/css/layout.css'
 // import './assets/css/default.css' // 为何不生效
@@ -18,5 +19,6 @@ Vue.use(ElementUI)
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')
