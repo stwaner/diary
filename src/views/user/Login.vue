@@ -58,14 +58,11 @@ export default {
         if (valid) {
           const res = await login({ loginName:this.ruleForm.loginName, pwd: this.ruleForm.password })
           if (res.code == 200) {
-            console.log(res.data)
             this.$message.success('登录成功')
-            // sessionStorage.setItem('userName', '11')
             // sessionStorage.setItem('userInfo', '11')
-            // this.$store.dispatch('setUser', res.data)
+            this.$store.dispatch('setUser', res.data)
             // this.$store.dispatch('setToken', res.token)
             this.$router.push({ path: '/home' })
-            // this.$router.push({ path: '/home' }).catch(err => { console.log(err) })
           } else {
             this.$message.error(res.msg)
           }

@@ -21,10 +21,10 @@ const routes = [
       }
     ]
   }, {
-    path: '/home1',
+    path: '/home',
     name: 'Home',
     component: () => import(/* webpackChunkName: 'user' */ '@/views/Home.vue'),
-    meta: { title: '首页', keepAlive: true, requireAuth: true }
+    meta: { title: '首页', keepAlive: true } // requireAuth: true
   }, {
     path: '/test',
     name: 'TipTap',

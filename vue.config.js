@@ -7,7 +7,8 @@ function resolve(dir) {
 const isProd = process.env.NODE_ENV === 'production'
 
 module.exports = {
-  publicPath: isProd ? './' : '/',
+  // publicPath: isProd ? './' : '/',
+  publicPath: '/',
   outputDir: 'dist', // 打包文件输出目录
   lintOnSave: isProd, // eslint-loader 是否在保存的时候检查
   productionSourceMap: false, // 生产环境是否生成 sourceMap 文件
@@ -146,7 +147,8 @@ module.exports = {
     // 请求代理服务器 代理转发配置，用于调试环境
     proxy: {
       '/api': { //带上api前缀的
-        target: 'http://139.199.126.30:8080/', //代理目标地址
+        // target: 'http://139.199.126.30:8080/', //代理目标地址
+        target: 'http://daily.zhuyelong.cn/', //代理目标地址
         changeOrigin: true,
         logLevel: 'debug', // 控制台打印真是请求地址
         // secure: false, //如果是https，需要加此参数

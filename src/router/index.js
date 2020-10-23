@@ -32,6 +32,7 @@ router.beforeEach((to, from, next) => {
     document.title = to.meta.title
   }
   const token = store.state.token ? store.state.token : window.sessionStorage.getItem('token')
+  console.log('token: ' + token)
   if (to.meta.requireAuth) {
     if (!token) {
       router.push({ path: 'login' })

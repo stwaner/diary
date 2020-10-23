@@ -5,13 +5,13 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: null,
+    userInfo: null,
     isLogin: false,
     token: ''
   },
   getters: {
     getuserInfo (state) {
-      return state.user
+      return state.userInfo
     },
     getIsLogin (state) {
       return state.isLogin
@@ -26,7 +26,8 @@ export default new Vuex.Store({
       window.sessionStorage.setItem('token', data)
     },
     SET_USER: (state, data) => {
-      state.user = data
+      console.log(data)
+      state.userInfo = data
       window.sessionStorage.setItem('userInfo', data)
     },
     SET_ISLOGIN: (state, data) => {
@@ -35,12 +36,12 @@ export default new Vuex.Store({
     },
     SET_USERSTATUS: (state, user) => {
       if (user) {
-        state.user = user
+        state.userInfo = userInfo
         state.isLogin = true
-      } else if (user === null) {
+      } else if (userInfo === null) {
         sessionStorage.setItem('userInfo', null)
         sessionStorage.setItem('token', null)
-        state.user = null
+        state.userInfo = null
         state.isLogin = false
         state.token = ''
       }
