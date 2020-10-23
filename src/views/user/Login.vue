@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { getCookie } from '@/utils/cookie'
 import { login } from '@/api/login'
 export default {
   name: 'Login',
@@ -39,8 +40,8 @@ export default {
     return {
       isRember: false,
       ruleForm: {
-        loginName: '',
-        password: ''
+        loginName: '123',
+        password: '123'
       },
       rules: {
         loginName: [
@@ -54,17 +55,20 @@ export default {
   },
   methods: {
     submitForm () {
+      const _this = this
       this.$refs.loginForm.validate(async (valid) => {
         if (valid) {
           const res = await login({ loginName:this.ruleForm.loginName, pwd: this.ruleForm.password })
           if (res.code == 200) {
-            this.$message.success('登录成功')
-            // sessionStorage.setItem('userInfo', '11')
-            this.$store.dispatch('setUser', res.data)
-            // this.$store.dispatch('setToken', res.token)
-            this.$router.push({ path: '/home' })
+            _this.$message.success('登录成功')
+            const token = getCookie('JSESSIONID')
+            _this.$store.dispatch('setUser', res.data)
+            _this.$store.dispatch('setToken', token)
+            sessionStorage.setItem('token', token)
+            sessionStorage.setItem('userInfo', res.data)
+            _this.$router.push({ path: '/home' })
           } else {
-            this.$message.error(res.msg)
+            _this.$message.error(res.msg)
           }
         } else {
           return false

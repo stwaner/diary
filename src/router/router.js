@@ -6,7 +6,7 @@ const routes = [
     path: '/user',
     name: 'Main',
     component: resolve => require(['@/views/user/Main.vue'], resolve),
-    redirect: '/user/login',
+    redirect: '/login',
     children: [
       {
         path: 'login',
@@ -24,7 +24,7 @@ const routes = [
     path: '/home',
     name: 'Home',
     component: () => import(/* webpackChunkName: 'user' */ '@/views/Home.vue'),
-    meta: { title: '首页', keepAlive: true } // requireAuth: true
+    meta: { title: '首页', keepAlive: true, requireAuth: true } // requireAuth: true
   }, {
     path: '/test',
     name: 'TipTap',

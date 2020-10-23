@@ -7,7 +7,7 @@ Vue.use(Router)
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location) {
   console.log(location, '------------location')
-  return originalPush.call(this, location).catch(err => err)
+  return originalPush.call(this, location).catch(err => console.log(err))
 }
 
 const router = new Router({
@@ -26,6 +26,8 @@ const router = new Router({
   }
 })
 
+const loginPath = '/user/login'
+
 // 全局路由守卫
 router.beforeEach((to, from, next) => {
 	if (to.meta.title) {
@@ -34,10 +36,17 @@ router.beforeEach((to, from, next) => {
   const token = store.state.token ? store.state.token : window.sessionStorage.getItem('token')
   console.log('token: ' + token)
   if (to.meta.requireAuth) {
-    if (!token) {
-      router.push({ path: 'login' })
+    if (token) {
+      console.log(to.path + '------to.path')
+      console.log(loginPath + '------loginPath')
+      console.log(to.path == loginPath)
+      if (to.path == loginPath) {
+        router.push({ name: 'Home' })
+      } else {
+        next()
+      }
     } else {
-      next()
+      router.push({ name: 'Login' })
     }
   } else {
     next()

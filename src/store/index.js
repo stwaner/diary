@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    userInfo: null,
+    userInfo: {},
     isLogin: false,
     token: ''
   },
@@ -36,9 +36,10 @@ export default new Vuex.Store({
     },
     SET_USERSTATUS: (state, user) => {
       if (user) {
-        state.userInfo = userInfo
+        state.userInfo = user
         state.isLogin = true
-      } else if (userInfo === null) {
+      } else if (user === null) {
+        console.log('用户登出')
         sessionStorage.setItem('userInfo', null)
         sessionStorage.setItem('token', null)
         state.userInfo = null

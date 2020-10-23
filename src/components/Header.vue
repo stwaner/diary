@@ -3,9 +3,9 @@
     <div class="row">
       <div class="twelve columns">
         <div class="logo">
-          <a href="index.html">
+          <router-link tag="a" :to="{path:'/home'}">
             <img alt="" src="../assets/images/logo.png">
-          </a>
+          </router-link>
         </div>
         <nav id="nav-wrap">
           <a class="mobile-btn" href="#nav-wrap" title="Show navigation">Show navigation</a>
@@ -27,6 +27,7 @@
             <li><a href="about.html">About</a></li>
             <li><a href="contact.html">Contact</a></li>
             <li><a href="styles.html">Features</a></li>
+            <li @click="logout"><router-link tag="a" :to="{path: '/user/login'}">退出登录</router-link></li>
           </ul> <!-- end #nav -->
         </nav> <!-- end #nav-wrap -->
       </div>
@@ -36,7 +37,17 @@
 
 <script>
 export default {
+  data () {
+    return {
 
+    }
+  },
+  methods: {
+    logout () {
+      console.log(this.$store)
+      this.$store.dispatch('SET_USERSTATUS', null)
+    }
+  }
 }
 </script>
 
