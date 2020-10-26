@@ -23,25 +23,25 @@ export default new Vuex.Store({
   mutations: {
     SET_TOKEN: (state, data) => {
       state.token = data
-      window.sessionStorage.setItem('token', data)
+      window.localStorage.setItem('token', data)
     },
     SET_USER: (state, data) => {
       console.log(data)
       state.userInfo = data
-      window.sessionStorage.setItem('userInfo', data)
+      window.localStorage.setItem('userInfo', data)
     },
     SET_ISLOGIN: (state, data) => {
       state.isLogin = data
-      window.sessionStorage.setItem('isLogin', data)
+      window.localStorage.setItem('isLogin', data)
     },
     SET_USERSTATUS: (state, user) => {
+      console.log(user)
       if (user) {
         state.userInfo = user
         state.isLogin = true
-      } else if (user === null) {
-        console.log('用户登出')
-        sessionStorage.setItem('userInfo', null)
-        sessionStorage.setItem('token', null)
+      } else {
+        localStorage.setItem('userInfo', null)
+        localStorage.setItem('token', null)
         state.userInfo = null
         state.isLogin = false
         state.token = ''

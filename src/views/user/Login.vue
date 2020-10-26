@@ -64,8 +64,8 @@ export default {
             const token = getCookie('JSESSIONID')
             _this.$store.dispatch('setUser', res.data)
             _this.$store.dispatch('setToken', token)
-            sessionStorage.setItem('token', token)
-            sessionStorage.setItem('userInfo', res.data)
+            localStorage.setItem('token', token)
+            localStorage.setItem('userInfo', res.data)
             _this.$router.push({ path: '/home' })
           } else {
             _this.$message.error(res.msg)

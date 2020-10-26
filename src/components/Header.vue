@@ -44,8 +44,7 @@ export default {
   },
   methods: {
     logout () {
-      console.log(this.$store)
-      this.$store.dispatch('SET_USERSTATUS', null)
+      this.$store.dispatch('setUserStatus', null)
     }
   }
 }

@@ -33,24 +33,38 @@ router.beforeEach((to, from, next) => {
 	if (to.meta.title) {
     document.title = to.meta.title
   }
-  const token = store.state.token ? store.state.token : window.sessionStorage.getItem('token')
-  console.log('token: ' + token)
-  if (to.meta.requireAuth) {
-    if (token) {
-      console.log(to.path + '------to.path')
-      console.log(loginPath + '------loginPath')
-      console.log(to.path == loginPath)
-      if (to.path == loginPath) {
-        router.push({ name: 'Home' })
+  const token = store.state.token ? store.state.token : localStorage.getItem('token')
+  console.log(token)
+  if (token) {
+    if (to.matched.some(record => record.meta.requireAuth)) { // 判断该路由是否需要登录权限
+      if (to.path === loginPath) { // 判断缓存里面是否有 userName  //在登录的时候设置它的值
+        next({ path: '/home' })
       } else {
         next()
       }
     } else {
-      router.push({ name: 'Login' })
+      next({ path: '/home' })
     }
   } else {
-    next()
+    if (to.path == loginPath) {
+      next()
+    } else {
+      next({ path: '/user/login', query: { redirect: to.fullPath } })
+    }
   }
+  // if (to.matched.some(record => record.meta.requireAuth)) { // 判断该路由是否需要登录权限
+  //   console.log(token)
+  //   if (token) { // 判断缓存里面是否有 userName  //在登录的时候设置它的值
+  //     console.log('1111')
+  //     next()
+  //   } else {
+  //     console.log('2222')
+  //     // 将跳转的路由path作为参数，登录成功后跳转到该路由
+  //     next({ path: '/user/login', query: { redirect: to.fullPath } })
+  //   }
+  // } else {
+  //   next()
+  // }
   // const nextRoute = [ 'home' ];
   // let isLogin = global.isLogin;  // 是否登录
   // 未登录状态；当路由到nextRoute指定页时，跳转至login
