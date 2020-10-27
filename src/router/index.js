@@ -34,13 +34,12 @@ router.beforeEach((to, from, next) => {
     document.title = to.meta.title
   }
   const token = store.state.token ? store.state.token : localStorage.getItem('token')
-  console.log(token, token != null, token != 'undefined' || token != null)
-  // if (token != 'undefined' || token != null || token != '') {
-  if (token == 'undefined' || token == null) {
+  // console.log(token, typeof(token), token == 'undefined', token == 'null', token == 'undefined' || token == 'null' || token == null)
+  if (token == 'undefined' || token == 'null' || token == null) {
     if (to.path == loginPath) {
       next()
     } else {
-      // next({ path: '/user/login', query: { redirect: to.fullPath } })
+      next({ path: '/user/login', query: { redirect: to.fullPath } })
     }
   } else {
     console.log('11')
@@ -54,26 +53,10 @@ router.beforeEach((to, from, next) => {
       next({ path: '/home' })
     }
   }
-  // const nextRoute = [ 'home' ];
-  // let isLogin = global.isLogin;  // 是否登录
-  // 未登录状态；当路由到nextRoute指定页时，跳转至login
-  // if (nextRoute.indexOf(to.name) >= 0) {  
-  //  if (!isLogin) {
-  //    console.log('what fuck');
-  //    router.push({ name: 'login' })
-  //  }
-  // }
-    // 已登录状态；当路由到login时，跳转至home 
-  // if (to.name === 'login') {
-  //  if (isLogin) {
-  //    router.push({ name: 'home' });
-  //  }
-  // }
   next()
 })
 
 router.afterEach(route => {
-  // document.title = route.meta.title;
   window.scrollTo(0, 0)
 })
 

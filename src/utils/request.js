@@ -14,12 +14,6 @@ export function request(options) {
       timeout: 12 * 1000 // 12秒超时
     })
     instance(options).then(response => {
-      let token = localStorage.getItem('token')
-      // if (token) {
-      //   token = 'bearer' + ' ' + token.replace(/'|"/g, '') // 把token加入到默认请求参数中
-      //   config.headers.common['Authorization'] = token
-      // }
-
       if(response.data.code == 200){
         resolve(response.data) // 把请求到的数据发到引用请求的地方
       }
@@ -27,9 +21,7 @@ export function request(options) {
         Message.error('登陆超时, 请重新登陆')
         Storage.localRemove('token') // 删除已经失效或过期的token
         setTimeout(()=>{
-          router.push({
-            path: '/login'
-          })
+          router.push({ path: '/login' })
         }, 2000)
       }
     }).catch(error => {

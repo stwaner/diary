@@ -26,20 +26,20 @@ export default new Vuex.Store({
       window.localStorage.setItem('token', data)
     },
     SET_USER: (state, data) => {
-      console.log(data)
       state.userInfo = data
-      window.localStorage.setItem('userInfo', data)
+      window.localStorage.setItem('userInfo', JSON.stringify(data))
     },
     SET_ISLOGIN: (state, data) => {
       state.isLogin = data
-      window.localStorage.setItem('isLogin', data)
     },
     SET_USERSTATUS: (state, user) => {
-      console.log(user)
       if (user) {
+        console.log('登录')
         state.userInfo = user
         state.isLogin = true
+        localStorage.setItem('userInfo', JSON.stringify(user))
       } else {
+        console.log('退出登录')
         localStorage.setItem('userInfo', null)
         localStorage.setItem('token', null)
         state.userInfo = null
@@ -50,17 +50,17 @@ export default new Vuex.Store({
   },
   // actions,可以来做异步操作，然后提交给mutations，而后再对state(数据)进行操作
   actions: {
-    setUser ({ commit, data }) {
-      commit('SET_USER', data)
+    setUser (context, data) {
+      context.commit('SET_USER', data)
     },
-    setIsLogin ({ commit, data }) {
-      commit('SET_ISLOGIN', data)
+    setIsLogin (context, data) {
+      context.commit('SET_ISLOGIN', data)
     },
-    setToken ({ commit, data }) {
-      commit('SET_TOKEN', data)
+    setToken (context, data) {
+      context.commit('SET_TOKEN', data)
     },
-    setUserStatus ({ commit, data }) {
-      commit('SET_USERSTATUS', data)
+    setUserStatus (context, data) {
+      context.commit('SET_USERSTATUS', data)
     }
   }
 })

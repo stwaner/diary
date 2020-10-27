@@ -63,11 +63,9 @@ export default {
             console.log(res.data)
             _this.$message.success('登录成功')
             const token = getCookie('JSESSIONID')
-            console.log('login-token--', token)
-            localStorage.setItem('token', token)
-            // localStorage.setItem('userInfo', JSON.stringify(res.data))
-            // _this.$store.dispatch('setUser', res.data)
             _this.$store.dispatch('setToken', token)
+            _this.$store.dispatch('setIsLogin', true)
+            _this.$store.dispatch('setUserStatus', res.data)
             _this.$router.push({ path: '/home' })
           } else {
             _this.$message.error(res.msg)
