@@ -14,11 +14,11 @@ export function request(options) {
       timeout: 12 * 1000 // 12秒超时
     })
     instance(options).then(response => {
-      let token = Storage.localGet('token')
-      if (token) {
-        token = 'bearer' + ' ' + token.replace(/'|"/g, '') // 把token加入到默认请求参数中
-        config.headers.common['Authorization'] = token
-      }
+      let token = localStorage.getItem('token')
+      // if (token) {
+      //   token = 'bearer' + ' ' + token.replace(/'|"/g, '') // 把token加入到默认请求参数中
+      //   config.headers.common['Authorization'] = token
+      // }
 
       if(response.data.code == 200){
         resolve(response.data) // 把请求到的数据发到引用请求的地方

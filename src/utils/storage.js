@@ -1,5 +1,4 @@
-
-var Storage = {
+const Storage = {
   // ==================sessionsTorage设置缓存================
   // 设置缓存
   sessionSet: function (name, data) {
