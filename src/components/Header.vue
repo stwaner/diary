@@ -27,7 +27,7 @@
             <li><a href="about.html">About</a></li>
             <li><a href="contact.html">Contact</a></li>
             <li><a href="styles.html">Features</a></li>
-            <li @click="logout"><router-link tag="a" :to="{path: '/user/login'}">退出登录</router-link></li>
+            <li @click="handleLogOut"><a href="javascript:;">退出登录</a></li>
           </ul> <!-- end #nav -->
         </nav> <!-- end #nav-wrap -->
       </div>
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { logout } from '@/api/login'
 export default {
   data () {
     return {
@@ -43,8 +44,16 @@ export default {
     }
   },
   methods: {
-    logout () {
-      this.$store.dispatch('setUserStatus', null)
+    handleLogOut () {
+      this.$confirm('确认要退出吗？').then(_ => {
+        logout().then(res => {
+          if (res.code === 200) {
+            this.$store.dispatch('setUserStatus', null)
+            this.$router.push({ path:'/login' })
+          }
+        })
+        done();
+      }).catch(_ => {})
     }
   }
 }

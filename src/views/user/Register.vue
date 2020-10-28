@@ -2,11 +2,15 @@
   <div class="formDiv register_form">
     <h2 class="text-center">注册</h2>
     <el-form ref="regForm" :rules="rules" :model="ruleForm" label-width="0">
-      <el-form-item prop="userName">
-        <el-input prefix-icon="el-icon-user" clearable v-model="ruleForm.userName" placeholder="手机号码或邮箱"></el-input>
+      <el-form-item prop="email">
+        <el-input prefix-icon="el-icon-user" clearable v-model="ruleForm.email" placeholder="请输入邮箱"></el-input>
+      </el-form-item>
+      <el-form-item prop="code" class="code-input">
+        <el-input prefix-icon="el-icon-chat-line-square" size="medium" clearable v-model="ruleForm.code" placeholder="请输入验证码"></el-input>
+        <el-button @click="handleSendCode">发送验证码</el-button>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input prefix-icon="el-icon-lock" clearable v-model="ruleForm.password" placeholder="密码" show-password></el-input>
+        <el-input prefix-icon="el-icon-lock" clearable v-model="ruleForm.password" placeholder="请输入密码" show-password></el-input>
       </el-form-item>
       <el-form-item>
         <el-button class="btn-block" type="primary"  @click="submitForm">注册</el-button>
@@ -19,18 +23,23 @@
 </template>
 
 <script>
-import { register } from '@/api/login'
+import { register, getCode } from '@/api/login'
+// import { checkEmail } from '@/utils/rules'
 export default {
   name: 'Register',
   data () {
     return {
       ruleForm: {
-        userName: '',
-        password: ''
+        email: '2219431784@qq.com',
+        code: '',
+        password: '123456'
       },
       rules: {
-        userName: [
-          { required: true, message: '请输入手机号或邮箱', trigger: 'blur' }
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: '请输入验证码', trigger: 'blur' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' }
@@ -39,13 +48,27 @@ export default {
     }
   },
   methods: {
+    // 发送验证码
+    async handleSendCode () {
+      const email = this.ruleForm.email
+      if (!email) {
+        this.$message.info('请输入邮箱')
+        return
+      }
+      const res = await getCode({ email: email })
+      console.log(res)
+      if (res.code === 200) {
+        this.$message.success('发送成功')
+      }
+    },
     submitForm () {
-      this.$refs.regForm.validate(async (valid) => {
+      this.$refs.regForm.validate( async (valid) => {
         if (valid) {
-          const res = await register({ username: this.ruleForm.userName, pwd: this.ruleForm.password })
-          if (res.code == 200) {
+          const res = await register({ email: this.ruleForm.email, pwd: this.ruleForm.password, code: this.ruleForm.code })
+          console.log(res)
+          if (res.code === 200) {
             this.$message.success('注册成功')
-            this.$router.push({ path:'login' })
+            this.$router.push({ path: '/login' })
           } else {
             this.$message.error(res.msg)
           }
@@ -63,6 +86,12 @@ export default {
   .gap{
     margin: 30px 0;
     text-align: center;
+  }
+  .code-input .el-form-item__content{
+    display: flex;
+    .el-button{
+      margin-left: 20px;
+    }
   }
 }
 </style>
