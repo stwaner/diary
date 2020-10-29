@@ -2,7 +2,8 @@ import Vue from 'vue'
 import ElementUI from 'element-ui'
 import App from './App.vue'
 import axios from 'axios'
-import router from './router'
+import VueRouter from 'vue-router'
+import router from './router/index.js'
 import store from './store'
 // import './assets/css/base.css'
 // import './assets/css/layout.css'
@@ -15,6 +16,7 @@ Vue.config.productionTip = false
 Vue.prototype.$axios = axios
 
 console.log(process.env.VUE_APP_BASE_URL)
+Vue.use(VueRouter)
 Vue.use(ElementUI)
 
 new Vue({

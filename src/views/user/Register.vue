@@ -7,7 +7,7 @@
       </el-form-item>
       <el-form-item prop="code" class="code-input">
         <el-input prefix-icon="el-icon-chat-line-square" size="medium" clearable v-model="ruleForm.code" placeholder="请输入验证码"></el-input>
-        <el-button @click="handleSendCode">发送验证码</el-button>
+        <el-button @click="handleSendCode" :disabled="disabled">{{ sendText }}</el-button>
       </el-form-item>
       <el-form-item prop="password">
         <el-input prefix-icon="el-icon-lock" clearable v-model="ruleForm.password" placeholder="请输入密码" show-password></el-input>
@@ -29,6 +29,9 @@ export default {
   name: 'Register',
   data () {
     return {
+      disabled: false,
+      timmer: null,
+      sendText: '获取验证码',
       ruleForm: {
         email: '2219431784@qq.com',
         code: '',
@@ -56,26 +59,45 @@ export default {
         return
       }
       const res = await getCode({ email: email })
-      console.log(res)
       if (res.code === 200) {
         this.$message.success('发送成功')
+        this.countDown(100)
       }
     },
+    countDown (time = 60) {
+      if (time === 0) {
+        this.sendText = '获取验证码'
+        this.disabled = false
+        return
+      } else {
+        this.sendText = `重新发送(${time})`
+        this.disabled = true
+        time--
+      }
+      this.timmer = setTimeout(() => {
+        this.countDown(time)
+      }, 1000)
+    },
     submitForm () {
+      const _this = this
       this.$refs.regForm.validate( async (valid) => {
         if (valid) {
           const res = await register({ email: this.ruleForm.email, pwd: this.ruleForm.password, code: this.ruleForm.code })
-          console.log(res)
           if (res.code === 200) {
-            this.$message.success('注册成功')
-            this.$router.push({ path: '/login' })
+            _this.$message.success('注册成功')
+            _this.$router.push({ path: '/login' })
           } else {
-            this.$message.error(res.msg)
+            console.log(res.msg)
+            _this.$message.error(res.msg)
           }
         } else {
           return false
         }
       })
+    },
+    beforeDestroy() {
+      clearTimeout(this.timmer)
+      this.timmer = null
     }
   }
 }

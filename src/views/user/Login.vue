@@ -56,7 +56,7 @@ export default {
   methods: {
     submitForm () {
       const _this = this
-      this.$refs.loginForm.validate(async (valid) => {
+      _this.$refs.loginForm.validate(async (valid) => {
         if (valid) {
           const res = await login({ loginName:this.ruleForm.loginName, pwd: this.ruleForm.password })
           if (res.code == 200) {
