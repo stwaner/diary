@@ -53,7 +53,7 @@ router.beforeEach((to, from, next) => {
         next({ name: 'Login' })
       })
     } else {
-      next({ path: '/home' })
+      next()
     }
     
   }

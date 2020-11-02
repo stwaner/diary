@@ -27,8 +27,8 @@ const routes = [
     meta: { title: '首页', keepAlive: true, requireAuth: true } // requireAuth: true
   }, {
     path: '/test',
-    name: 'TipTap',
-    component: () => import(/* webpackChunkName: 'user' */ '@/test/TipTap.vue'),
+    name: 'Editor',
+    component: () => import(/* webpackChunkName: 'user' */ '@/test/Editor.vue'),
     meta: { title: '测试', keepAlive: true }
   },  {
     path: '/404',
