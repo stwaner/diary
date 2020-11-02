@@ -5,7 +5,7 @@ const userApi = {
   getCode: '/api/user/reg/get/code', // 注册获取验证码
   register: '/api/user/reg', // 注册
   logout: '/api/user/logout', // 登出
-  findAll: '/api/user/findAll' // 测试接口
+  getInfo: '/api/user/info' // 获取用户信息
 }
 
 export function login (params) {
@@ -47,11 +47,11 @@ export function logout () {
   })
 }
 
-export function findAll () {
+export function getInfo () {
   return request({
     xhrFields: { withCredentials: true },
     crossDomain: true,
-    url: userApi.findAll,
+    url: userApi.getInfo,
     method: 'get'
   })
 }

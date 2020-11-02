@@ -40,8 +40,8 @@ export default {
     return {
       isRember: false,
       ruleForm: {
-        loginName: '123',
-        password: '123'
+        loginName: '2219431784@qq.com',
+        password: '123456'
       },
       rules: {
         loginName: [
@@ -60,12 +60,11 @@ export default {
         if (valid) {
           const res = await login({ loginName:this.ruleForm.loginName, pwd: this.ruleForm.password })
           if (res.code == 200) {
-            console.log(res.data)
+            // console.log(res.data)
             _this.$message.success('登录成功')
             const token = getCookie('JSESSIONID')
             _this.$store.dispatch('setToken', token)
-            _this.$store.dispatch('setIsLogin', true)
-            _this.$store.dispatch('setUserStatus', res.data)
+            // _this.$store.dispatch('setIsLogin', true)
             _this.$router.push({ path: '/home' })
           } else {
             _this.$message.error(res.msg)

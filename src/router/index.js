@@ -42,16 +42,20 @@ router.beforeEach((to, from, next) => {
       next({ path: '/user/login', query: { redirect: to.fullPath } })
     }
   } else {
-    console.log('11')
     if (to.matched.some(record => record.meta.requireAuth)) { // 判断该路由是否需要登录权限
-      if (to.path === loginPath) { // 判断缓存里面是否有 userName  //在登录的时候设置它的值
-        next({ path: '/home' })
-      } else {
-        next()
-      }
+      store.dispatch('GetInfo').then(user => {
+        if (to.path === loginPath) { // 判断缓存里面是否有 userName  //在登录的时候设置它的值
+          next({ path: '/home' })
+        } else {
+          next()
+        }
+      }).catch(() => {
+        next({ name: 'Login' })
+      })
     } else {
       next({ path: '/home' })
     }
+    
   }
   next()
 })
