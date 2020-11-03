@@ -1,5 +1,7 @@
 const path = require('path')
 const UglifyPlugin = require('uglifyjs-webpack-plugin')
+const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' )
+const { styles } = require( '@ckeditor/ckeditor5-dev-utils' )
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -15,6 +17,9 @@ module.exports = {
   // runtimeCompiler: true,
   // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
   // webpack配置
+  transpileDependencies: [
+    /ckeditor5-[^/\\]+[/\\]src[/\\].+\.js$/,
+  ],
   chainWebpack: (config) => {
     // 对vue-cli内部的 webpack 配置进行更细粒度的修改
     config.optimization.minimizer('terser').tap((args) => {
@@ -38,6 +43,29 @@ module.exports = {
       .options({
           name: 'assets/[name].[hash:8].[ext]'
       })
+      
+    svgRule.exclude.add( path.join( __dirname, 'node_modules', '@ckeditor' ) );
+
+    config.module
+      .rule( 'cke-svg' )
+      .test( /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/ )
+      .use( 'raw-loader' )
+      .loader( 'raw-loader' );
+
+    config.module
+      .rule( 'cke-css' )
+      .test( /ckeditor5-[^/\\]+[/\\].+\.css$/ )
+      .use( 'postcss-loader' )
+      .loader( 'postcss-loader' )
+      .tap( () => {
+          return styles.getPostCssConfig( {
+              themeImporter: {
+                  themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
+              },
+              minify: true
+          } );
+      });
+
     // if prod is on
     // assets require on cdn
     if (isProd) {
@@ -51,15 +79,15 @@ module.exports = {
     }
   },
   configureWebpack: (config) => {
-    // config.module.rules.push({
-    //   test: /\.vue$/,
-    //   use: [{
-    //     loader: 'iview-loader', // 解决ivew组件 忽略前缀i的问题
-    //     options: {
-    //       prefix: false
-    //     }
-    //   }]
-    // })
+    plugins: [
+      // CKEditor needs its own plugin to be built using webpack.
+      new CKEditorWebpackPlugin({
+        // See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
+        language: 'en',
+        // Append translations to the file matching the `app` name.
+        translationsOutputFile: /app/
+      })
+    ]
     if (process.env.NODE_ENV === 'production') {
       // 为生产环境修改配置...
       config.mode = 'production'
