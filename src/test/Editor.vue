@@ -1,13 +1,24 @@
 <template>
-  <ckeditor :editor="editor" :value="editorData" :config="editorConfig"></ckeditor>
+  <ckeditor :editor="editor" id="editor" :value="editorData" :config="editorConfig"></ckeditor>
 </template>
 
 <script>
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
-// import '@ckeditor/ckeditor5-build-classic/build/translations/zh-cn' //中文包
-// import ClassicEditor from '@/components/in_editor/core/ckeditor'
+import '@ckeditor/ckeditor5-build-classic/build/translations/zh-cn' //中文包
 import CKEditor from '@ckeditor/ckeditor5-vue'
+// import ClassicEditor from '@/components/in_editor/core/ckeditor'
+
+// import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+
+// ⚠️ NOTE: We don't use @ckeditor/ckeditor5-build-classic any more!
+// Since we're building CKEditor from source, we use the source version of ClassicEditor.
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+
+import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
+import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
+import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 export default {
   name: 'ClassicEditor',
@@ -27,6 +38,24 @@ export default {
       editor: ClassicEditor,
       editorData: '',
       editorConfig: {
+        plugins: [
+            EssentialsPlugin,
+            BoldPlugin,
+            ItalicPlugin,
+            LinkPlugin,
+            ParagraphPlugin
+        ],
+
+        toolbar: {
+            items: [
+                'bold',
+                'italic',
+                'link',
+                'undo',
+                'redo'
+            ]
+        },
+        language: 'zh-cn',
         // 可以控制编辑器的提示文本
         placeholder: this.placeholder,
       }
@@ -61,6 +90,13 @@ export default {
   mounted () {
   },
   methods: {
+    onReady( editor )  {
+        // Insert the toolbar before the editable area.
+        editor.ui.getEditableElement().parentElement.insertBefore(
+            editor.ui.view.toolbar.element,
+            editor.ui.getEditableElement()
+        );
+    }
   }
 }
 </script>
