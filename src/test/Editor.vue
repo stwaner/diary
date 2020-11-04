@@ -4,9 +4,9 @@
 
 <script>
 
-// import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 // import '@ckeditor/ckeditor5-build-classic/build/translations/zh-cn' //中文包
-import ClassicEditor from '@/components/in_editor/core/ckeditor'
+// import ClassicEditor from '@/components/in_editor/core/ckeditor'
 import CKEditor from '@ckeditor/ckeditor5-vue'
 
 export default {
@@ -65,6 +65,6 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss">
+  @import '../assets/css/content-styles.css'
 </style>
