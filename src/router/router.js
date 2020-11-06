@@ -6,7 +6,7 @@ const routes = [
     path: '/user',
     name: 'Main',
     component: resolve => require(['@/views/user/Main.vue'], resolve),
-    redirect: '/login',
+    redirect: '/user/login',
     children: [
       {
         path: 'login',
