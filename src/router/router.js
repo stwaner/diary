@@ -31,6 +31,11 @@ const routes = [
     component: () => import(/* webpackChunkName: 'user' */ '@/test/Editor.vue'),
     meta: { title: '测试', keepAlive: true }
   },  {
+    path: '/learn',
+    name: 'Learn',
+    component: () => import(/* webpackChunkName: 'user' */ '@/views/learn/Learn.vue'),
+    meta: { title: '学习天地', keepAlive: true }
+  },  {
     path: '/404',
     component: resolve => require(['@/views/exception/404.vue'], resolve),
     meta: { title: '404', keepAlive: true }
