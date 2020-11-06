@@ -1,5 +1,7 @@
 <template>
+  <div id="ClassicEditor">
   <ckeditor :editor="editor" id="editor" :value="editorData" :config="editorConfig"></ckeditor>
+  </div>
 </template>
 
 <script>
