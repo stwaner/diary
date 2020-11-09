@@ -24,6 +24,7 @@
 
 <script>
 import { register, getCode } from '@/api/login'
+import customValid from '@/utils/customValidate'
 // import { checkEmail } from '@/utils/rules'
 export default {
   name: 'Register',
@@ -39,7 +40,8 @@ export default {
       },
       rules: {
         email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' }
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { validator: ruleForm.email, trigger: 'blur' }
         ],
         code: [
           { required: true, message: '请输入验证码', trigger: 'blur' }

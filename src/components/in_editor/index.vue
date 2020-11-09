@@ -5,7 +5,7 @@
 <script>
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
-// import '@ckeditor/ckeditor5-build-classic/build/translations/zh-cn' //中文包
+import '@ckeditor/ckeditor5-build-classic/build/translations/zh-cn' //中文包
 import CKEditor from '@ckeditor/ckeditor5-vue'
 
 export default {
@@ -26,6 +26,7 @@ export default {
       editor: ClassicEditor,
       editorData: '',
       editorConfig: {
+        language: 'zh-cn',
         // 可以控制编辑器的提示文本
         placeholder: this.placeholder,
       }
@@ -65,5 +66,7 @@ export default {
 </script>
 
 <style>
-
+.ck-editor__editable{
+  min-height: 350px;
+}
 </style>

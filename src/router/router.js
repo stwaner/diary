@@ -33,7 +33,7 @@ const routes = [
   },  {
     path: '/learn',
     name: 'Learn',
-    component: () => import(/* webpackChunkName: 'user' */ '@/views/learn/Learn.vue'),
+    component: () => import(/* webpackChunkName: 'user' */ '@/views/learn/LearnUpdate.vue'),
     meta: { title: '学习天地', keepAlive: true }
   },  {
     path: '/404',
