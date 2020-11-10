@@ -15,10 +15,11 @@
             </div>
             <div class="ten columns entry-title pull-right">
               <h3>
-                <router-link tag="a" :to="{path:'/learn'}">
-                  {{ item.learnTitle }}
-                </router-link>
+                <router-link tag="a" :to="{path:'/learn/update'}"> {{ item.learnTitle }} </router-link>
               </h3>
+              <p>
+                <el-tag class="tags" v-for="(label, index) in item.label" :key="index">{{ label.labelContext }}</el-tag>
+              </p>
             </div>
             <div class="two columns post-meta end">
               <p>
@@ -30,7 +31,7 @@
           <div class="ten columns offset-2 post-content">
             <pre v-html="item.learnContext"></pre>
           </div>
-          <a class="alter-link"> 编辑<i class="fa fa-arrow-circle-o-right"></i> </a>
+          <a class="alter-link" @click="handleEditLearn(item.learnId)"> 编辑<i class="fa fa-arrow-circle-o-right"></i> </a>
         </article>
         <!-- Entry End -->
       </div>
@@ -56,6 +57,9 @@ export default {
     console.log(this.learnList)
   },
   methods: {
+    handleEditLearn (learnId) {
+      this.$router.push({ name: 'LearnUpdate', query: { learnId: learnId }})
+    }
   }
 };
 </script>
@@ -91,20 +95,25 @@ export default {
       position: relative;
       margin-bottom: 6px;
       overflow: hidden;
-      .entry-title { padding-right: 16.66667%; }
-      h3 { font: 31px/42px raleway-bold, sans-serif; }
+      .entry-title { 
+        padding-right: 16.66667%;
+        h3 { 
+          font: 24px raleway-bold, sans-serif; 
+        }
+        .tags{margin-right: 12px;}
+      }
       .permalink {
         position: absolute;
         top: 10px;
         right: 60px;
-        z-index: 999999;
+        z-index: 1;
         a {
           color: #fff;
           display: block;
           text-align: center;
           background-color: #9199A1;
-          width: 48px;
-          height: 48px;
+          width: 58px;
+          height: 58px;
           margin: 0;
           padding: 0;
           border-radius: 100%;
@@ -128,8 +137,9 @@ export default {
     border-top: 1px dotted #d8d8d8;
     cursor: pointer;
     padding: 35px 15px 12px;
+    transition: all .2s ease-in;
     &:hover{
-      background: #ededed;
+      background: #f5f5f5;
     }
     .post-meta   {
       font: 15px/21px notosans-regular, sans-serif;

@@ -30,12 +30,17 @@ const routes = [
     name: 'Editor',
     component: () => import(/* webpackChunkName: 'user' */ '@/test/Editor.vue'),
     meta: { title: '测试', keepAlive: true }
-  },  {
+  }, {
     path: '/learn',
     name: 'Learn',
+    component: () => import(/* webpackChunkName: 'user' */ '@/views/learn/Index.vue'),
+    meta: { title: '学习天地', keepAlive: true }
+  }, {
+    path: '/learn/update',
+    name: 'LearnUpdate',
     component: () => import(/* webpackChunkName: 'user' */ '@/views/learn/LearnUpdate.vue'),
     meta: { title: '学习天地', keepAlive: true }
-  },  {
+  }, {
     path: '/404',
     component: resolve => require(['@/views/exception/404.vue'], resolve),
     meta: { title: '404', keepAlive: true }

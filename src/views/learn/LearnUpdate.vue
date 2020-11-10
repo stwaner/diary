@@ -52,6 +52,7 @@
   export default {
     data() {
       return {
+        learnId: this.$route.query.learnId,
         dynamicTags: ['javascript', 'vue', 'html'],
         inputVisible: false,
         inputValue: '',
@@ -73,6 +74,9 @@
     },
     components: {
       Editor
+    },
+    created () {
+      console.log('learnId--------' + this.learnId)
     },
     methods: {
       handleClose(tag) {
