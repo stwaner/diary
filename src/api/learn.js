@@ -15,12 +15,12 @@ export function findLearn (params) {
   })
 }
 
-export function saveLearn (params) {
+export function saveLearn (data) {
   return request({
     xhrFields: { withCredentials: true },
     crossDomain: true,
     url: LearnApi.saveLearn,
     method: 'post',
-    params: params
+    params: data
   })
 }

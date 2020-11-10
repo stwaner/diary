@@ -4,7 +4,6 @@
       <router-link to>
         <a @click="$router.back(-1)"> <i class="el-icon-arrow-left"></i> 学习列表</a>
       </router-link>
-      <!-- <el-button style="float: right; padding: 3px 0" type="text"><i class="el-icon-close"></i></el-button> -->
     </div>
     <div class="text item">
       <div class="Learn-update-wrapper">
@@ -34,8 +33,7 @@
             <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添加</el-button>
           </el-form-item>
           <el-form-item label="学习内容" prop="learnContext">
-            <editor :value="ruleForm.learnContext"></editor>
-            <!-- <el-input type="textarea"></el-input> -->
+            <editor @input="inputChange" :value="ruleForm.learnContext"></editor>
           </el-form-item>
           <el-form-item style="text-align:center;">
             <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
@@ -50,15 +48,17 @@
 <script>
   import Editor from '../../components/in_editor/index.vue'
   import { saveLearn } from '@/api/learn'
+
   export default {
     data() {
       return {
         dynamicTags: ['javascript', 'vue', 'html'],
         inputVisible: false,
         inputValue: '',
+        learnHtml: '',
         ruleForm: {
           learnTitle: '',
-          learnContext: '内容'
+          learnContext: ''
         },
         rules: {
           learnTitle: [
@@ -92,21 +92,29 @@
         this.inputVisible = false;
         this.inputValue = '';
       },
+      inputChange (val) {
+        this.ruleForm.learnContext = val
+        this.$nextTick(() => {
+          this.learnHtml = val.replace(/<[^>]+>/g, "")
+        })
+      },
       submitForm(formName) {
         this.$refs[formName].validate(async (valid, values) => {
           if (valid) {
-            // alert('submit!');
             let data = {}
-            data.userId = '19'
+            data.userId = this.$store.state.userInfo.userId
             data.learnTitle = this.ruleForm.learnTitle
             data.tag = this.dynamicTags.join(',')
-            data.learnHtml = this.ruleForm.learnContext
+            data.learnHtml = this.learnHtml
             data.learnContext = this.ruleForm.learnContext
+            console.log(data)
             const res = await saveLearn(data)
             console.log(res)
             if (res.code === 200) {
               this.$message.success('添加成功')
               this.$router.go(-1)
+            } else {
+              this.$message.error(res.msgg)
             }
           } else {
             console.log('error submit!!');
