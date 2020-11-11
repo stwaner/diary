@@ -29,7 +29,7 @@
             </div>
           </div>
           <div class="ten columns offset-2 post-content">
-            <pre v-html="item.learnContext"></pre>
+            <pre v-html="item.learnHtml"></pre>
           </div>
           <a class="alter-link" @click="handleEditLearn(item.learnId)"> 编辑<i class="fa fa-arrow-circle-o-right"></i> </a>
         </article>
@@ -42,7 +42,7 @@
 
 <script>
 export default {
-  name: "Learn",
+  name: 'Learn',
   data () {
     return {
     }
@@ -58,10 +58,10 @@ export default {
   },
   methods: {
     handleEditLearn (learnId) {
-      this.$router.push({ name: 'LearnUpdate', query: { learnId: learnId }})
+      this.$router.push({ name: 'LearnUpdate', query: { learnId: learnId } })
     }
   }
-};
+}
 </script>
 
 <style lang="scss">

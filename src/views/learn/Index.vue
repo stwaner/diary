@@ -1,9 +1,15 @@
 <template>
-  <learn-tab :learnList="learnList"></learn-tab>
+  <div>
+    <page-header></page-header>
+    <learn-tab :learnList="learnList"></learn-tab>
+    <page-footer></page-footer>
+  </div>
 </template>
 
 <script>
-import { findLearn } from "@/api/learn"
+import pageHeader from '@/components/Header.vue'
+import pageFooter from '@/components/Footer.vue'
+import { findLearn } from '@/api/learn'
 import LearnTab from './LearnListItem.vue'
 
 export default {
@@ -13,6 +19,8 @@ export default {
     }
   },
   components: {
+    pageHeader,
+    pageFooter,
     LearnTab
   },
   created () {

@@ -407,7 +407,7 @@ dd { margin: 0 0 0 20px; }
 --------------------------------------------------------------- */
 .row {
    width: 96%;
-   max-width: 1020px;
+   max-width: 1200px;
    margin: 0 auto;
 }
 /* fixed width for IE8 */

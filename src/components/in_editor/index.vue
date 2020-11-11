@@ -5,10 +5,9 @@
 <script>
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
-import '@ckeditor/ckeditor5-build-classic/build/translations/zh-cn' //中文包
+import '@ckeditor/ckeditor5-build-classic/build/translations/zh-cn' // 中文包
 import CKEditor from '@ckeditor/ckeditor5-vue'
 const upload = require('../../assets/js/upload')
-
 
 export default {
   name: 'ClassicEditor',
@@ -22,16 +21,16 @@ export default {
       default: '请输入内容'
     }
   },
-  data() {
+  data () {
     return {
       // 编辑器组件需要获取编辑器实例
       editor: ClassicEditor,
       editorData: '',
       editorConfig: {
-        language: 'zh-cn',  // 中文
-        extraPlugins: [ upload.MyCustomUploadAdapterPlugin ],
+        language: 'zh-cn', // 中文
+        extraPlugins: [upload.MyCustomUploadAdapterPlugin],
         // 可以控制编辑器的提示文本
-        placeholder: this.placeholder,
+        placeholder: this.placeholder
       }
     }
   },
@@ -52,7 +51,7 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     console.log(this.value)
     // 编辑器组件创建时将外部传入的值直接赋予编辑器
     this.editorData = this.value
@@ -64,7 +63,7 @@ export default {
   mounted () {
   },
   methods: {
-    onReady( editor )  {
+    onReady (editor) {
       // 在可编辑区域之前插入工具栏。
       editor.ui.getEditableElement().parentElement.insertBefore(
         editor.ui.view.toolbar.element,
