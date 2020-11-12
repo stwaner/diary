@@ -409,6 +409,7 @@ dd { margin: 0 0 0 20px; }
    width: 96%;
    max-width: 1200px;
    margin: 0 auto;
+   position: relative;
 }
 /* fixed width for IE8 */
 .ie .row { width: 1000px ; }

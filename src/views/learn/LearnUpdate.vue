@@ -1,9 +1,7 @@
 <template>
   <el-card class="box-card" shadow="never">
     <div slot="header" class="clearfix">
-      <router-link to>
-        <a @click="$router.back(-1)"> <i class="el-icon-arrow-left"></i> 学习列表</a>
-      </router-link>
+      <a href="javascript:;" @click="goBack"> <i class="el-icon-arrow-left"></i> 学习列表</a>
     </div>
     <div class="text item">
       <div class="Learn-update-wrapper">
@@ -72,6 +70,11 @@ export default {
       }
     }
   },
+  computed: {
+    userId () {
+      return (JSON.parse(window.localStorage.getItem('userInfo'))).userId
+    }
+  },
   components: {
     Editor
   },
@@ -120,7 +123,7 @@ export default {
         if (valid) {
           const data = {}
           let msg = ''
-          data.userId = this.$store.state.userInfo.userId
+          data.userId = this.$store.state.userInfo.userId || this.userId
           data.learnTitle = this.ruleForm.learnTitle
           data.tag = this.dynamicTags.join(',')
           data.learnHtml = this.ruleForm.learnHtml
@@ -143,8 +146,17 @@ export default {
         }
       })
     },
-    resetForm (formName) {
-      this.$refs[formName].resetFields()
+    goBack () {
+      this.$confirm('该文件未保存，要保留更改吗?', 'DO YOU WANT TO SAVE?', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$router.back(-1)
+      }).catch(() => {
+        this.$router.back(-1)
+        // this.submitForm('ruleForm')
+      })
     }
   }
 }

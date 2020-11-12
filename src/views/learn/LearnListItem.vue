@@ -1,11 +1,6 @@
 <template>
   <div>
     <section id="journal" class="journal">
-      <!-- <div class="row">
-        <div class="twelve columns align-center">
-          <h1 class="parg-title">学习天地</h1>
-        </div>
-      </div> -->
       <div class="blog-entries">
         <!-- Entry -->
         <article class="row entry" v-for="item in learnList" :key="item.learnId">
@@ -14,9 +9,7 @@
               <a><img style="width:100%;height:100%;" :src="item.avatar" alt="" /></a>
             </div>
             <div class="ten columns entry-title pull-right">
-              <h3>
-                <router-link tag="a" :to="{path:'/learn/update'}"> {{ item.learnTitle }} </router-link>
-              </h3>
+              <h3> {{ item.learnTitle }} </h3>
               <p>
                 <el-tag class="tags" v-for="(label, index) in item.label" :key="index">{{ label.labelContext }}</el-tag>
               </p>
@@ -31,7 +24,10 @@
           <div class="ten columns offset-2 post-content">
             <pre v-html="item.learnHtml"></pre>
           </div>
-          <a class="alter-link" @click="handleEditLearn(item.learnId)"> 编辑<i class="fa fa-arrow-circle-o-right"></i> </a>
+          <div class="op-tap">
+            <a class="alter-link update-op" @click="handleEditLearn(item.learnId)"> 编辑<i class="fa fa-arrow-circle-o-right"></i> </a>
+            <a class="alter-link del-op" @click="handleDelete(item.learnId)"> 删除<i class="fa fa-arrow-circle-o-right"></i> </a>
+          </div>
         </article>
         <!-- Entry End -->
       </div>
@@ -50,15 +46,31 @@ export default {
   props: {
     learnList: {
       type: Array,
-      default: []
+      default: () => []
     }
   },
   mounted () {
-    console.log(this.learnList)
   },
   methods: {
     handleEditLearn (learnId) {
       this.$router.push({ name: 'LearnUpdate', query: { learnId: learnId } })
+    },
+    handleDelete (learnId) {
+      this.$confirm('确定要删除该记录吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }
@@ -66,24 +78,25 @@ export default {
 
 <style lang="scss">
 .journal {
-   background: #fff url("../../assets/images/content-bg.jpg")/*tpa=https://www.freemoban.com/preview/201611132213/images/content-bg.jpg*/;
-   padding-top: 60px;
-   padding-bottom: 48px;
-   a{
-     color: #11ABB0;
-     &:visited {
-       color: #11ABB0;
-     }
-     &:focus, &:hover {
-       color: #313131;
-     }
-   }
-   h1 {
+  position: relative;
+  background: #fff url("../../assets/images/content-bg.jpg");
+  padding-top: 60px;
+  padding-bottom: 48px;
+  a{
+    color: #11ABB0;
+    // &:visited {
+    //   color: #11ABB0;
+    // }
+    // &:focus, &:hover {
+    //   color: #313131;
+    // }
+  }
+  h1 {
     font: 20px/36px raleway-bold, sans-serif;
-    margin-bottom: 36px;
+    margin-bottom: 0;
     color: #A1A8AF;
   }
-  .blog-entries { 
+  .blog-entries {
     margin-top: 0;
     article.entry{
       &:first-child{
@@ -95,17 +108,17 @@ export default {
       position: relative;
       margin-bottom: 6px;
       overflow: hidden;
-      .entry-title { 
+      .entry-title {
         padding-right: 16.66667%;
-        h3 { 
-          font: 24px raleway-bold, sans-serif; 
+        h3 {
+          font: 24px raleway-bold, sans-serif;
         }
         .tags{margin-right: 12px;}
       }
       .permalink {
         position: absolute;
-        top: 10px;
-        right: 60px;
+        top: 0;
+        left: 0;
         z-index: 1;
         a {
           color: #fff;
@@ -135,11 +148,15 @@ export default {
   .entry {
     position: relative;
     border-top: 1px dotted #d8d8d8;
-    cursor: pointer;
     padding: 35px 15px 12px;
     transition: all .2s ease-in;
     &:hover{
-      background: #f5f5f5;
+      transition: all .2s ease-in;
+      .alter-link{
+        color: #fff;
+        width: 80px;
+        opacity: 1;
+      }
     }
     .post-meta   {
       font: 15px/21px notosans-regular, sans-serif;
@@ -157,26 +174,88 @@ export default {
         display: block;
       }
     }
-    .post-content {  
+    .post-content {
       padding-right: 16.66667%;
-      p {
-        font: 16px/30px notosans-regular, sans-serif;
+      max-height: 350px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      &::-webkit-scrollbar{
+        width: 4px;
+        height: 4px;
       }
-      a.more-link {
-        font: 16px/30px notosans-bold, sans-serif;
-        margin-left: 3px;
-        i {
-          margin-left: 10px;
-          font-size: 14px;
+      &::-webkit-scrollbar-thumb{
+        width: 6px;
+        -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        background: #ccc;
+      }
+      &::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        border-radius: 0;
+        background: #f5f5f5;
+      }
+    }
+    .op-tap{
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      display: flex;
+      transition: all .2s ease-in;
+      cursor: pointer;
+    }
+    .alter-link{
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 0;
+      opacity: 0;
+      transition: all .2s ease-in;
+      &.update-op{
+        right: 90px;
+        background: rgba(0,0,0,.4);
+      }
+      &.del-op{
+        right: 10px;
+        background: rgba(232, 9, 9, .6);
+      }
+    }
+  }
+  .more{
+    width: 100%;
+    text-align: right;
+    margin-bottom: 25px;
+    a{
+      padding: 5px 15px 6px 20px;
+      font-size: 14px;
+      border-radius: 17px;
+      border: 1px solid #E3E3E3;
+      transition: all .2s ease-in;
+      &::after {
+        content: '';
+        width: 0;
+        height: 0;
+        display: inline-block;
+        border-width: 6px;
+        border-style: solid;
+        border-color: transparent transparent transparent #11ABB0;
+        margin-left: 5px;
+        transition: all .2s ease-in;
+      }
+      &:hover{
+        background: #f5f5f5;
+        &::after{
+          border-color: transparent transparent transparent #666;
         }
       }
     }
-    .alter-link{
-      position: absolute;
-      right: 10px;
-      top: 55px;
-    }
   }
+}
+.el-pagination{
+  text-align: center;
 }
 
 </style>
