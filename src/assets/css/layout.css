@@ -168,8 +168,8 @@ header {
 /* header logo */
 header .logo {
    position: absolute;
-   left: 20px;
-   top: 48px;
+   left: 0;
+   top: 36px;
 }
 header .logo a {
    display: block;
@@ -179,6 +179,9 @@ header .logo a {
 	outline: none;
    width: 113px;
    height: 24px;
+}
+header .logo a img{
+   width: 120px;
 }
 
 /* primary navigation
@@ -195,7 +198,6 @@ header .logo a {
 	position: relative;
    font: 14px raleway-bold, sans-serif;
    float: right;
-   margin-top: 36px;
    margin-right: 20px;
    z-index: 1;
 }
@@ -563,6 +565,7 @@ ul#nav ul li a {
 .portfolio-item .item-wrap img {
    vertical-align: bottom;
    border-radius: 3px 3px 0 0;
+   width: 100%;
 }
 
 .portfolio-item .portfolio-item-meta { padding: 18px 0; }
