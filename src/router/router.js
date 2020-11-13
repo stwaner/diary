@@ -1,7 +1,22 @@
 const routes = [
   {
     path: '/',
-    redirect: '/home'
+    name: 'Index',
+    component: resolve => require(['@/views/Index.vue'], resolve),
+    redirect: '/home',
+    children: [
+      {
+        path: 'home',
+        name: 'Home',
+        component: resolve => require(['@/views/Home.vue'], resolve),
+        meta: { title: '首页', keepAlive: true, requireAuth: true }
+      }, {
+        path: 'learn',
+        name: 'Learn',
+        component: resolve => require(['@/views/learn/Index.vue'], resolve),
+        meta: { title: '学习天地', keepAlive: true, requireAuth: true }
+      }
+    ]
   }, {
     path: '/user',
     name: 'Main',
@@ -21,20 +36,10 @@ const routes = [
       }
     ]
   }, {
-    path: '/home',
-    name: 'Home',
-    component: () => import(/* webpackChunkName: 'user' */ '@/views/Home.vue'),
-    meta: { title: '首页', keepAlive: true, requireAuth: true } // requireAuth: true
-  }, {
     path: '/test',
     name: 'Editor',
     component: () => import(/* webpackChunkName: 'user' */ '@/test/Editor.vue'),
     meta: { title: '测试', keepAlive: true }
-  }, {
-    path: '/learn',
-    name: 'Learn',
-    component: () => import(/* webpackChunkName: 'user' */ '@/views/learn/Index.vue'),
-    meta: { title: '学习天地', keepAlive: true }
   }, {
     path: '/learn/update',
     name: 'LearnUpdate',

@@ -58,14 +58,14 @@ export default {
       const _this = this
       _this.$refs.loginForm.validate(async (valid) => {
         if (valid) {
-          const res = await login({ loginName:this.ruleForm.loginName, pwd: this.ruleForm.password })
-          if (res.code == 200) {
+          const res = await login({ loginName: this.ruleForm.loginName, pwd: this.ruleForm.password })
+          if (res.code === 200) {
             // console.log(res.data)
             _this.$message.success('登录成功')
             const token = getCookie('JSESSIONID')
             _this.$store.dispatch('setToken', token)
             // _this.$store.dispatch('setIsLogin', true)
-            _this.$router.push({ path: '/home' })
+            _this.$router.push({ path: '/' })
           } else {
             _this.$message.error(res.msg)
           }

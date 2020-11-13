@@ -1,6 +1,5 @@
 <template>
   <div>
-    <page-header></page-header>
     <div class="home">
       <section id="info">
         <div class="row">
@@ -108,14 +107,11 @@
         <learn-part :learnList="learnList"></learn-part>
       </div>
     </div>
-    <page-footer></page-footer>
   </div>
 </template>
 
 <script>
 
-import pageHeader from '../components/Header.vue'
-import pageFooter from '../components/Footer.vue'
 import LearnPart from './learn/LearnListItem.vue'
 import { findLearn } from '@/api/learn'
 
@@ -132,8 +128,6 @@ export default {
     }
   },
   components: {
-    pageHeader,
-    pageFooter,
     LearnPart
   },
   created () {
@@ -160,6 +154,5 @@ export default {
 </script>
 
 <style lang="scss">
-  @import '../assets/css/default.css';
-  @import '../assets/css/layout.css';
+
 </style>

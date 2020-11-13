@@ -1,6 +1,5 @@
 <template>
   <div>
-    <page-header></page-header>
     <div class="row search-wrap">
       <el-input class="keywords-inpupt" placeholder="请输入关键字搜索" v-model="keywords">
         <el-button slot="append" icon="el-icon-search"></el-button>
@@ -20,13 +19,10 @@
       :hide-on-single-page="true"
     >
     </el-pagination>
-    <page-footer></page-footer>
   </div>
 </template>
 
 <script>
-import pageHeader from '@/components/Header.vue'
-import pageFooter from '@/components/Footer.vue'
 import { findLearn } from '@/api/learn'
 import LearnTab from './LearnListItem.vue'
 
@@ -49,8 +45,6 @@ export default {
     }
   },
   components: {
-    pageHeader,
-    pageFooter,
     LearnTab
   },
   created () {
