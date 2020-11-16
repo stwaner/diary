@@ -147,16 +147,16 @@ export default {
       })
     },
     goBack () {
-      // this.$confirm('该文件未保存，要保留更改吗?', 'DO YOU WANT TO SAVE?', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(() => {
-      //   this.$router.back(-1)
-      // }).catch(() => {
-      //   // this.submitForm('ruleForm')
-      // })
-      this.$router.back(-1)
+      this.$confirm('该文件未保存，要保留更改吗?', 'DO YOU WANT TO SAVE?', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$router.back(-1)
+      }).catch(() => {
+        this.$router.back(-1)
+        // this.submitForm('ruleForm')
+      })
     }
   }
 }

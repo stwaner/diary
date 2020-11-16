@@ -32,7 +32,7 @@ export default {
       learnList: [],
       total: 0,
       keywords: '',
-      orderCause: 2,
+      orderCause: 2, // 1正序2倒序
       page: {
         pageNo: 1, // 当前页码
         length: 5 // 每页条数

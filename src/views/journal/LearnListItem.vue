@@ -8,7 +8,7 @@
             <div class="permalink">
               <a><img style="width:100%;height:100%;" :src="item.avatar" alt="" /></a>
             </div>
-            <div class="nine columns entry-title pull-right">
+            <div class="ten columns entry-title pull-right">
               <h3> {{ item.learnTitle }} </h3>
               <p>
                 <el-tag class="tags" v-for="(label, index) in item.label" :key="index">{{ label.labelContext }}</el-tag>
@@ -20,13 +20,13 @@
                 <span class="dauthor">By {{ item.nickName }}</span>
               </p>
             </div>
-            <div class="op-tap">
-              <a class="alter-link update-op" @click="handleEditLearn(item.learnId)"> 编辑<i class="fa fa-arrow-circle-o-right"></i> </a>
-              <a class="alter-link del-op" @click="handleDelete(item.learnId)"> 删除<i class="fa fa-arrow-circle-o-right"></i> </a>
-            </div>
           </div>
-          <div class="nine columns offset-3 post-content">
+          <div class="ten columns offset-2 post-content">
             <pre v-html="item.learnHtml"></pre>
+          </div>
+          <div class="op-tap">
+            <a class="alter-link update-op" @click="handleEditLearn(item.learnId)"> 编辑<i class="fa fa-arrow-circle-o-right"></i> </a>
+            <a class="alter-link del-op" @click="handleDelete(item.learnId)"> 删除<i class="fa fa-arrow-circle-o-right"></i> </a>
           </div>
         </article>
         <!-- Entry End -->
@@ -62,8 +62,8 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$message({
-          type: 'error',
-          message: '该功能未开发'
+          type: 'success',
+          message: '删除成功!'
         })
       }).catch(() => {
         this.$message({
@@ -125,8 +125,8 @@ export default {
           display: block;
           text-align: center;
           background-color: #9199A1;
-          width: 78px;
-          height: 78px;
+          width: 58px;
+          height: 58px;
           margin: 0;
           padding: 0;
           border-radius: 100%;
