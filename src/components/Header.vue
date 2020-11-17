@@ -30,7 +30,7 @@
               </ul>
             </li>
             <div class="user">
-              <li><img src="../assets/images/author-img.png" alt=""> <span>婉儿</span></li>
+              <li><img src="../assets/images/author-img.png" alt=""> <span>{{ userName }}</span></li>
               <ul class="user-manage">
                 <li><a href="">个人中心</a></li>
                 <li @click="handleLogOut"><a href="javascript:;">退出登录</a></li>
@@ -59,10 +59,14 @@ export default {
       navIndex: 0
     }
   },
+  computed: {
+    userName () {
+      return (JSON.parse(window.localStorage.getItem('userInfo'))).nickName || this.$store.state.userInfo.userName
+    }
+  },
   methods: {
     routerLink (index, path) {
       this.navIndex = index
-      console.log(path)
       this.$router.push(path)
     },
     handleLogOut () {
@@ -95,11 +99,21 @@ export default {
   .user{
     position: relative;
     display: inline-block;
+    height: 33px;
+    padding: 0 10px;
     &:hover{
       .user-manage{
-        display: block;
-        height: auto;
         opacity: 1;
+        filter: alpha(opacity=100);
+        // display: block;
+        li{
+          height: 42px;
+          overflow: visible;
+          border-bottom: 1px solid #26272C;
+          &:last-child{
+            border: none;
+          }
+        }
       }
     }
     img{
@@ -109,25 +123,37 @@ export default {
       vertical-align: middle;
     }
     .user-manage{
-      display: none;
-      height: 0;
       position: absolute;
       top: 40px;
       left: 0;
       background: #1f2024;
       text-align: center;
-      width: 120%;
-      -webkit-transition: all .2s ease-in-out;
-      -moz-transition: all .2s ease-in-out;
-      -o-transition: all .2s ease-in-out;
-      -ms-transition: all .2s ease-in-out;
-      transition: all .2s ease-in-out;
-      li{
-        height: 36px!important;
-        color: #fff;
-        a{
-          line-height: 22px!important;
-          
+      min-width: 110%;
+      border-radius: 0 0 3px 3px;
+      opacity: 0;
+      filter: alpha(opacity=0);
+      -webkit-transition: opacity .25s ease .1s;
+      -moz-transition: opacity .25s ease .1s;
+      -o-transition: opacity .25s ease .1s;
+      -ms-transition: opacity .25s ease .1s;
+      transition: opacity .25s ease .1s;
+       li {
+        padding: 0;
+        display: block;
+        text-align: left;
+        /* for transition effects */
+        height: 0;
+        overflow: hidden;
+        -webkit-transition: height .25s ease .1s;
+        -moz-transition: height .25s ease .1s;
+        -o-transition: height .25s ease .1s;
+        -ms-transition: height .25s ease .1s;
+        transition: height .25s ease .1s;
+        a {
+          padding: 6px 15px;
+          margin: 0;
+          white-space: nowrap;
+          font-size: 13px;
         }
       }
     }

@@ -2,36 +2,38 @@
   <div>
     <section id="journal" class="journal">
       <div class="blog-entries">
-        <!-- Entry -->
-        <article class="row entry" v-for="item in learnList" :key="item.learnId">
-          <div class="entry-header">
-            <div class="permalink">
-              <a><img style="width:100%;height:100%;" :src="item.avatar" alt="" /></a>
+        <template v-if="learnList.length!==0">
+          <article class="row entry" v-for="item in learnList" :key="item.learnId">
+            <div class="entry-header">
+              <div class="permalink">
+                <a><img style="width:100%;height:100%;" :src="item.avatar" alt="" /></a>
+              </div>
+              <div class="nine columns entry-title pull-right">
+                <h3> {{ item.learnTitle }} </h3>
+                <p>
+                  <el-tag class="tags" v-for="(label, index) in item.label" :key="index">{{ label.labelContext }}</el-tag>
+                </p>
+              </div>
+              <div class="two columns post-meta end">
+                <p>
+                  <time datetime="2014-01-31" class="post-date">{{ item.created }}</time>
+                  <span class="dauthor">By {{ item.nickName }}</span>
+                </p>
+              </div>
+              <div class="op-tap">
+                <a class="alter-link update-op" @click="handleEditLearn(item.learnId)"> 编辑<i class="fa fa-arrow-circle-o-right"></i> </a>
+                <a class="alter-link del-op" @click="handleDelete(item.learnId)"> 删除<i class="fa fa-arrow-circle-o-right"></i> </a>
+              </div>
             </div>
-            <div class="nine columns entry-title pull-right">
-              <h3> {{ item.learnTitle }} </h3>
-              <p>
-                <el-tag class="tags" v-for="(label, index) in item.label" :key="index">{{ label.labelContext }}</el-tag>
-              </p>
+            <div class="nine columns offset-3 post-content">
+              <pre v-html="item.learnHtml"></pre>
             </div>
-            <div class="two columns post-meta end">
-              <p>
-                <time datetime="2014-01-31" class="post-date">{{ item.created }}</time>
-                <span class="dauthor">By {{ item.nickName }}</span>
-              </p>
-            </div>
-            <div class="op-tap">
-              <a class="alter-link update-op" @click="handleEditLearn(item.learnId)"> 编辑<i class="fa fa-arrow-circle-o-right"></i> </a>
-              <a class="alter-link del-op" @click="handleDelete(item.learnId)"> 删除<i class="fa fa-arrow-circle-o-right"></i> </a>
-            </div>
-          </div>
-          <div class="nine columns offset-3 post-content">
-            <pre v-html="item.learnHtml"></pre>
-          </div>
-        </article>
-        <!-- Entry End -->
+          </article>
+        </template>
+        <div class="no-data" v-else>
+          <img src="@/assets/images/empty.gif" alt="暂无数据">
+        </div>
       </div>
-      <!-- Entries End -->
     </section>
   </div>
 </template>
@@ -195,6 +197,9 @@ export default {
         border-radius: 0;
         background: #f5f5f5;
       }
+      img{
+        max-width: 350px;
+      }
     }
     .op-tap{
       position: absolute;
@@ -256,6 +261,12 @@ export default {
 }
 .el-pagination{
   text-align: center;
+}
+.no-data{
+  text-align: center;
+  img{
+    width: 420px;
+  }
 }
 
 </style>

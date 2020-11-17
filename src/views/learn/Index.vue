@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="row search-wrap">
-      <el-input class="keywords-inpupt" placeholder="请输入关键字搜索" v-model="keywords">
-        <el-button slot="append" icon="el-icon-search"></el-button>
+      <el-input class="keywords-inpupt" @keyup.enter.native="getLearnList" placeholder="请输入关键字搜索" v-model="keywords">
+        <el-button slot="append" icon="el-icon-search" @click="getLearnList"></el-button>
       </el-input>
       <el-button class="add-btn" icon="el-icon-plus" type="primary" @click="handleAdd">新增</el-button>
     </div>
@@ -13,7 +13,7 @@
       :total="total"
       :page-size="page.length"
       :current-page="page.pageNo"
-      :page-sizes="[5, 10, 15, 20]"
+      :page-sizes="[10, 15, 20, 30]"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :hide-on-single-page="true"
@@ -35,7 +35,7 @@ export default {
       orderCause: 2, // 1正序2倒序
       page: {
         pageNo: 1, // 当前页码
-        length: 5 // 每页条数
+        length: 10 // 每页条数
       }
     }
   },
