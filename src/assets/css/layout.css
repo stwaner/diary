@@ -484,11 +484,11 @@ ul#nav .sub-li li a {
 /* ------------------------------------------------------------------ */
 
 #works {
-   background: #f5f5f5 url("../images/works-bg.jpg")/*tpa=https://www.freemoban.com/preview/201611132213/images/works-bg.jpg*/;
+   /* background: #f5f5f5 url("../images/works-bg.jpg")tpa=https://www.freemoban.com/preview/201611132213/images/works-bg.jpg; */
    padding-top: 48px;
    padding-bottom: 36px;
-   border-top: 1px solid #E3E8E8;
-   border-bottom: 1px solid #E3E8E8;
+   /* border-top: 1px solid #E3E8E8; */
+   /* border-bottom: 1px solid #E3E8E8; */
 }
 #works h1 {
    font: 20px/36px raleway-bold, sans-serif;

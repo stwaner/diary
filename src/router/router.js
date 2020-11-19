@@ -28,7 +28,7 @@ const routes = [
       }, {
         path: 'journal/update',
         name: 'JournalUpdate',
-        component: () => import(/* webpackChunkName: 'user' */ '@/views/journal/LearnUpdate.vue'),
+        component: () => import(/* webpackChunkName: 'user' */ '@/views/journal/JournalUpdate.vue'),
         meta: { title: '新建日记', keepAlive: true, requireAuth: true }
       }, {
         path: 'travels',
