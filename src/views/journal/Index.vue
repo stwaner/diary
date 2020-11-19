@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="row search-wrap">
+      <el-button class="add-btn" icon="el-icon-plus" @click="handleAdd">新增</el-button>
       <el-input class="keywords-inpupt" @keyup.enter.native="getJournalList" placeholder="请输入关键字搜索" v-model="keywords">
         <el-button slot="append" icon="el-icon-search" @click="getJournalList"></el-button>
       </el-input>
-      <el-button class="add-btn" icon="el-icon-plus" type="primary" @click="handleAdd">新增</el-button>
     </div>
     <journal-item :journalList="journalList"></journal-item>
     <el-pagination
@@ -83,16 +83,18 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .search-wrap{
   margin-top: 30px;
   width: 100%;
-  text-align: right;
   .keywords-inpupt{
-    width: 280px;
+    width: 25%;
+    float: right;
   }
   .add-btn{
-    margin-left: 30px;
+    width: 70%;
+    margin-right: 30px;
+    float: left;
   }
 }
 </style>

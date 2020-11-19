@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="row diary-wrap">
-      <div class="diary-item" v-for="(item, index) in journalList" :key="index">
-        <h3 class="title"><span>天气：</span>{{ item.weather }} <span>心情：</span> {{ item.mood }}</h3>
+      <div class="diary-item" v-for="item in journalList" :key="item.diaryId">
+        <h3 class="title">{{ item.weather }} {{ item.mood }}</h3>
         <p class="diary-content" v-html="item.diaryContext"></p>
         <div class="footer">
           <p>{{item.created}}</p>
