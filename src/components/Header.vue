@@ -103,9 +103,9 @@ export default {
     padding: 0 10px;
     &:hover{
       .user-manage{
-        opacity: 1;
-        filter: alpha(opacity=100);
-        // display: block;
+        // opacity: 1;
+        // filter: alpha(opacity=100);
+        display: block;
         li{
           height: 42px;
           overflow: visible;
@@ -130,8 +130,9 @@ export default {
       text-align: center;
       min-width: 110%;
       border-radius: 0 0 3px 3px;
-      opacity: 0;
-      filter: alpha(opacity=0);
+      display: none;
+      // opacity: 0;
+      // filter: alpha(opacity=0);
       -webkit-transition: opacity .25s ease .1s;
       -moz-transition: opacity .25s ease .1s;
       -o-transition: opacity .25s ease .1s;

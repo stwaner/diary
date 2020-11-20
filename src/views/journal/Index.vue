@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="journal-wrapper">
     <div class="row search-wrap">
       <el-button class="add-btn" icon="el-icon-plus" @click="handleAdd">新增</el-button>
       <el-input class="keywords-inpupt" @keyup.enter.native="getJournalList" placeholder="请输入关键字搜索" v-model="keywords">
@@ -84,17 +84,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.search-wrap{
-  margin-top: 30px;
-  width: 100%;
-  .keywords-inpupt{
-    width: 25%;
-    float: right;
-  }
-  .add-btn{
-    width: 70%;
-    margin-right: 30px;
-    float: left;
+.journal-wrapper{
+  background: #fbfbfb;
+  .search-wrap{
+    padding-top: 30px;
+    width: 100%;
+    .keywords-inpupt{
+      width: 25%;
+      float: right;
+    }
+    .add-btn{
+      width: 70%;
+      margin-right: 30px;
+      float: left;
+    }
   }
 }
 </style>

@@ -5,35 +5,32 @@
     </div>
     <div class="text item">
       <div class="Learn-update-wrapper">
-          {{journalObj}}
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-          <el-form-item class="inline-item" label="日期" prop="dialyDate">
+          <el-form-item class="inline-item" label="日期">
             <el-date-picker
               v-model="ruleForm.dialyDate"
               type="datetime"
               format="yyyy/MM/dd hh:mm:ss"
               value-format="yyyy/MM/dd hh:mm:ss"
+              :disabled="journalObj.dialyDate ? true : false"
               placeholder="选择日记时间">
             </el-date-picker>
           </el-form-item>
-          <el-form-item class="inline-item" label="气温" prop="temperature">
-            <el-input-number controls-position="right" v-model="ruleForm.temperature" :value="journalObj.temperature"></el-input-number>
+          <el-form-item class="inline-item" label="气温">
+            <el-input-number controls-position="right" v-model="ruleForm.temperature"></el-input-number>
           </el-form-item>
-          <el-form-item class="inline-item" label="心情描述" prop="mood">
-            <el-input v-model="ruleForm.mood" :value="journalObj.mood"></el-input>
-          </el-form-item>
-          <el-form-item class="inline-item" label="心情等级" prop="mood_type">
+          <el-form-item class="inline-item" label="心情等级">
             <el-rate
               v-model="ruleForm.mood_type"
               :icon-classes="iconClasses"
-              void-icon-class="el-icon-s-tools"
-              :colors="['#99A9BF', '#F7BA2A', '#FF9900', '#F7BA2A', '#FF9900']"
-              show-text
-            >
+              void-icon-class="icon-rate-face-off"
+              :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
             </el-rate>
           </el-form-item>
+          <el-form-item class="inline-item" label="心情描述">
+            <el-input v-model="ruleForm.mood"></el-input>
+          </el-form-item>
           <el-form-item class="inline-item" label="天气">
-            <!-- <el-input v-model="ruleForm.weather" :value="journalObj.weather"></el-input> -->
             <el-radio-group v-model="ruleForm.weather_type">
               <el-radio :label="0"><i class="el-icon-sunny" title="晴"></i></el-radio>
               <el-radio :label="1"><i class="el-icon-cloudy" title="阴"></i></el-radio>
@@ -42,15 +39,15 @@
               <el-radio :label="4"><i class="el-icon-heavy-rain" title="雨"></i></el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item class="inline-item" label="是否公开" prop="statusId">
-            <el-radio-group :value="ruleForm.statusId">
+          <el-form-item class="inline-item" label="是否公开">
+            <el-radio-group v-model="ruleForm.statusId">
               <el-radio :label="0">私密</el-radio>
               <el-radio :label="1">公开</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="内容" prop="diaryHtml">
-            <!-- <el-input type="textarea" v-model="ruleForm.diaryContext"></el-input> -->
-            <editor @input="inputChange" :value="ruleForm.diaryHtml"></editor>
+          <!-- <el-form-item label="内容" prop="diaryHtml"> -->
+          <el-form-item label="内容">
+            <editor @input="inputChange" v-model="ruleForm.diaryHtml"></editor>
           </el-form-item>
           <el-form-item style="text-align:center;">
             <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
@@ -71,24 +68,17 @@ export default {
     return {
       diaryId: this.$route.query.diaryId,
       journalObj: {},
-      dialyDate: null,
-      inputValue: '',
-      diaryContext: '',
-      iconClasses: ['el-icon-alarm-clock', 'el-icon-alarm-clock', 'el-icon-alarm-clock', 'el-icon-alarm-clock', 'el-icon-alarm-clock'],
+      iconClasses: ['icon-rate-face-1', 'icon-rate-face-2', 'icon-rate-face-3'],
       ruleForm: {
         dialyDate: null,
-        weather: '',
         weather_type: null,
         mood: '',
-        mood_type: 3,
-        temperature: 20,
+        mood_type: null,
+        temperature: undefined,
         diaryHtml: '',
         statusId: 0
       },
       rules: {
-        dialyDate: [
-          { required: true, message: '请填写日记时间', trigger: 'blur' }
-        ],
         diaryHtml: [
           { required: true, message: '请填写内容', trigger: 'blur' }
         ]
@@ -113,18 +103,20 @@ export default {
       const res = await journalDetail({ diaryId: this.diaryId, userId: this.userId })
       if (res.code === 200) {
         this.journalObj = res.data
-        // this.initData()
+        this.initData()
       }
     },
     inputChange (val) {
       this.ruleForm.diaryHtml = val
     },
     initData () {
-      this.ruleForm.learnTitle = this.journalObj.learnTitle
-      this.ruleForm.learnHtml = this.journalObj.learnHtml
-      for (const key in this.journalObj.label) {
-        this.dynamicTags.push(this.journalObj.label[key].labelContext)
-      }
+      this.ruleForm.dialyDate = this.journalObj.dialyDate
+      this.ruleForm.temperature = this.journalObj.temperature
+      this.ruleForm.mood = this.journalObj.mood
+      this.ruleForm.mood_type = this.journalObj.moodType
+      this.ruleForm.statusId = this.journalObj.statusId
+      this.ruleForm.weather_type = this.journalObj.weatherType
+      this.ruleForm.diaryHtml = this.journalObj.diaryHtml
     },
     handleClose (tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1)
@@ -135,19 +127,10 @@ export default {
         this.$refs.saveTagInput.$refs.input.focus()
       })
     },
-    handleInputConfirm () {
-      const inputValue = this.inputValue
-      if (inputValue) {
-        this.dynamicTags.push(inputValue)
-      }
-      this.inputVisible = false
-      this.inputValue = ''
-    },
     submitForm (formName) {
       this.$refs[formName].validate(async (valid, values) => {
         if (valid) {
           const data = {}
-          let msg = ''
           data.userId = this.$store.state.userInfo.userId || this.userId
           data.dialyDate = this.ruleForm.dialyDate
           data.mood = this.ruleForm.mood
@@ -157,13 +140,14 @@ export default {
           data.statusId = this.ruleForm.statusId
           data.diaryHtml = this.ruleForm.diaryHtml
           data.diaryContext = this.ruleForm.diaryHtml.replace(/<[^>]+>/g, '')
+          console.log(data)
+          let msg = ''
           if (this.diaryId) {
             data.diaryId = this.diaryId
             msg = '修改成功'
           } else {
             msg = '添加成功'
           }
-          console.log(data,msg)
           const res = await saveJournal(data)
           if (res.code === 200) {
             this.$message.success(msg)
@@ -178,22 +162,18 @@ export default {
     },
     goBack () {
       this.$router.back(-1)
-      // this.$confirm('该文件未保存，要保留更改吗?', 'DO YOU WANT TO SAVE?', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(() => {
-      //   this.$router.back(-1)
-      // }).catch(() => {
-      //   this.$router.back(-1)
-      //   // this.submitForm('ruleForm')
-      // })
     }
   }
 }
 </script>
 
 <style lang="scss">
+  @import url('../../assets/fonts/style.css');
+  @media screen and (max-width: 1200px) {
+    .inline-item{
+      width: 100%;
+    }
+  }
   .Learn-update-wrapper{
     padding: 0 150px;
     .el-rate {
@@ -216,9 +196,17 @@ export default {
       width: 50%;
       display: inline-block;
     }
+    .el-input-number .el-input__inner{
+      text-align-last: left;
+    }
     .el-form-item__label{
       margin: 0;
       text-align: left;
+      .el-radio__label{
+        i{
+          font-size: 17px;
+        }
+      }
     }
     .el-form-item__content{
       .el-tag{
