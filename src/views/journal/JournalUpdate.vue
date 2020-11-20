@@ -132,7 +132,7 @@ export default {
         if (valid) {
           const data = {}
           data.userId = this.$store.state.userInfo.userId || this.userId
-          data.dialyDate = this.ruleForm.dialyDate
+          data.dialyDate = this.ruleForm.dialyDate.replaceAll("-","/")
           data.mood = this.ruleForm.mood
           data.mood_type = this.ruleForm.mood_type
           data.weather_type = this.ruleForm.weather_type
