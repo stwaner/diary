@@ -134,8 +134,8 @@ export default {
           data.userId = this.$store.state.userInfo.userId || this.userId
           data.dialyDate = this.ruleForm.dialyDate.replaceAll("-","/")
           data.mood = this.ruleForm.mood
-          data.mood_type = this.ruleForm.mood_type
-          data.weather_type = this.ruleForm.weather_type
+          data.moodType = this.ruleForm.mood_type
+          data.weatherType = this.ruleForm.weather_type
           data.temperature = this.ruleForm.temperature
           data.statusId = this.ruleForm.statusId
           data.diaryHtml = this.ruleForm.diaryHtml

@@ -8,7 +8,7 @@
         <!-- <p :class="data.isSelected ? 'is-selected' : ''">
           {{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}
         </p> -->
-        <p :class="rqi.indexOf(data.day) > -1 ? 'is-selected' : ''" @click="handleBianJi(data.day)">
+        <p :class="rqi.indexOf(data.day) > -1 ? 'is-selected' : ''" @click="handleClickEvent(data.day)">
           {{ data.day.split('-').slice(1).join('-') }} <br/>
           <el-popover
             placement="right-start"
@@ -18,45 +18,49 @@
             <span slot="reference" class="calen-text">{{ rqi.indexOf(data.day) > -1 ? rqineirong[data.day].jqmc : '无事件'}}</span>
           </el-popover>
         </p>
+        <div class="plus-wrap">
+          <el-button icon="el-icon-plus" size="mini" circle @click="handleClickEvent()" title="新增事件"></el-button>
+        </div>
       </template>
     </el-calendar>
-    <!-- 添加或修改节假日管理 - 法定节假日对话框 -->
+
+    <!-- 新增事件弹窗 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="假期名称" prop="jqmc">
-          <el-input v-model="form.jqmc" placeholder="请输入假期名称" />
+        <el-form-item label="事件标题" prop="eventContext">
+          <el-input v-model="form.eventContext" placeholder="请输入事件标题" />
         </el-form-item>
-        <el-form-item label="开始时间" prop="kssj">
+        <el-form-item label="计划时间" prop="planTime">
           <el-date-picker
             clearable
             size="small"
             style="width: 100%"
-            v-model="form.kssj"
-            type="date"
-            value-format="yyyy-MM-dd"
+            v-model="form.planTime"
+            type="datetime"
+            format="yyyy/MM/dd hh:mm:ss"
+            value-format="yyyy/MM/dd hh:mm:ss"
             placeholder="选择开始时间">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="结束时间" prop="jssj">
+        <el-form-item label="消耗时长" prop="timeCost">
+          <el-input v-model="form.timeCost" placeholder="请输入消耗时长" />
+        </el-form-item>
+        <el-form-item label="提醒">
+          <el-switch
+            v-model="form.remind">
+          </el-switch>
+        </el-form-item>
+        <el-form-item label="提醒时间" prop="remindTime" v-if="form.remind">
           <el-date-picker
             clearable
             size="small"
             style="width: 100%"
-            v-model="form.jssj"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择结束时间">
+            v-model="form.remindTime"
+            type="datetime"
+            format="yyyy/MM/dd hh:mm:ss"
+            value-format="yyyy/MM/dd hh:mm:ss"
+            placeholder="选择提醒时间">
           </el-date-picker>
-        </el-form-item>
-        <el-form-item label="类型" prop="lx">
-          <el-select v-model="form.lx" placeholder="请选择类型" clearable :style="{ width: '100%' }">
-            <el-option
-              v-for="dict in jjrlxOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -69,58 +73,68 @@
 </template>
 
 <script>
+import { findEventList, saveEvent } from '@/api/events'
 export default {
   data () {
     return {
+      eventId: null,
       rqi:[],
       rqineirong:{}, // 日期内容
-      // 遮罩层
+      orderCause: 2, // 1正序2倒序
+      page: {
+        pageNo: 1, // 当前页码
+        length: 30 // 每页条数
+      },
       loading: true,
-      // 弹出层标题
       title: "",
-      // 是否显示弹出层
       open: false,
       // 表单参数
-      form: {},
-      // 表单校验
-      rules: {
-        jqmc: [
-          { required: true, message: "假期名称不能为空", trigger: "blur" }
-        ],
-        kssj: [
-          { required: true, message: "开始时间不能为空", trigger: "blur" }
-        ],
-        jssj: [
-          { required: true, message: "结束时间不能为空", trigger: "blur" }
-        ],
-        lx: [
-          { required: true, message: "假期类型不能为空", trigger: "change" }
-        ],
+      form: {
+        remind: false
       },
-      // 节假日类型
-      jjrlxOptions: []
+      rules: { // 表单校验
+        eventContext: [
+          { required: true, message: "事件内容不能为空", trigger: "blur" }
+        ],
+        timeCost: [
+          { required: true, message: "消耗时间不能为空", trigger: "blur" }
+        ],
+        planTime: [
+          { required: true, message: "计划时间不能为空", trigger: "blur" }
+        ],
+        remindTime: [
+          { required: true, message: "提醒时间不能为空", trigger: "change" }
+        ],
+      }
+    }
+  },
+  computed: {
+    userId () {
+      return (JSON.parse(window.localStorage.getItem('userInfo'))).userId
     }
   },
   created () {
-    // this.getList()
-    // 获取节假日类型
-    // this.getDicts("jjr_fdjjr_lx").then(response => {
-    //   this.jjrlxOptions = response.data
-    // })
+    this.getList()
   },
   methods: {
-    /** 查询节假日管理 - 法定节假日列表 */
+    /** 查询事件列表 */
     getList() {
       this.loading = true
-      listFdjjr(this.queryParams).then(res => {
-        this.rqi = []
-        this.rqineirong = {}
-        for(let i=0;i<res.length;i++){
-          for(var key in res[i]){
-            this.rqi.push(key)
-            this.rqineirong[key] = res[i][key]
-          }
-        }
+      const data = {}
+      // data.keywords = this.keywords
+      data['page.pageNo'] = this.page.pageNo
+      data['page.length'] = this.page.length
+      data.orderCause = this.orderCause
+      findEventList(data).then(res => {
+        console.log(res)
+        // this.rqi = []
+        // this.rqineirong = {}
+        // for(let i=0;i<res.length;i++){
+        //   for(var key in res[i]){
+        //     this.rqi.push(key)
+        //     this.rqineirong[key] = res[i][key]
+        //   }
+        // }
       })
     },
     // 取消按钮
@@ -131,57 +145,47 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        jqmc: undefined,
-        kssj: undefined,
-        jssj: undefined,
-        lx: undefined
+        eventContext: undefined,
+        timeCost: undefined,
+        planTime: undefined,
+        remind: false,
+        remindTime: undefined
       }
-      this.resetForm("form")
-    },
-    /** 搜索按钮操作 */
-    handleQuery(day) {
-      this.queryParams.pageNum = 1
-      this.getList()
     },
     /** 提交按钮 */
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.id != undefined) {
-            updateFdjjr(this.form).then(response => {
-              if (response.code === 200) {
-                this.msgSuccess("修改成功")
-                this.open = false
-                this.reset()
-                this.getList()
-              }
-            })
-          } else {
-            addFdjjr(this.form).then(response => {
-              if (response.code === 200) {
-                this.msgSuccess("新增成功")
-                this.open = false
-                this.reset()
-                this.getList()
-              }
-            })
+          this.form['userId'] = this.userId
+          if (this.eventId) {
+            this.form['eventId'] = this.eventId
           }
+          if (this.form.remind) {
+            this.form.remind = 1
+          } else {
+            this.form.remind = 0
+          }
+          console.log(this.form)
+          saveEvent(this.form).then(res => {
+            console.log(res)
+            if (res.code === 200) {
+              this.open = false
+              this.$message.success('添加成功')
+              this.reset()
+              // this.getList()
+            }
+          })
         }
       })
     },
     /** 编辑日期操作 */
-    handleBianJi(day) {
-      if(this.rqineirong[day]){
-        console.log(this.rqineirong[day])
-        this.form = this.rqineirong[day]
-        this.title = '编辑节假日'
+    handleClickEvent(day) {
+      if(day){
+        this.title = '编辑事件'
       }else{
         let obj = {}
-        obj.kssj = day.valueOf()
-        obj.jssj = day.valueOf()
-        this.form = obj
-        this.form = obj
-        this.title = '新增节假日'
+        // obj.kssj = day.valueOf()
+        this.title = '新增事件'
       }
       this.open = true
     },
@@ -235,6 +239,9 @@ export default {
       -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
       border-radius: 5px;
       background: rgba(0,0,0,0.1);
+    }
+    .plus-wrap{
+      text-align: center;
     }
   }
 }

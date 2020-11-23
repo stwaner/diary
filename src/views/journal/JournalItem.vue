@@ -7,11 +7,11 @@
           <!-- 0晴 1阴 2多云 3雪 4雨 -->
            <!-- :title="'天气 '+item.weather" -->
            <a href="javascript:" :title=" item.mood ? item.mood : '无'">
-            <span class="weather-icon" v-if="item.moodType === 0"> <img src="@/assets/img/emoticon/0.png" :alt="item.mood"> </span>
-            <span class="weather-icon" v-if="item.moodType === 1"> <img src="@/assets/img/emoticon/1.png" :alt="item.mood"> </span>
+            <span class="weather-icon" v-if="item.moodType === 0"> <img src="@/assets/img/emoticon/4.png" :alt="item.mood"> </span>
+            <span class="weather-icon" v-if="item.moodType === 1"> <img src="@/assets/img/emoticon/3.png" :alt="item.mood"> </span>
             <span class="weather-icon" v-if="item.moodType === 2"> <img src="@/assets/img/emoticon/2.png" :alt="item.mood"> </span>
-            <span class="weather-icon" v-if="item.moodType === 3"> <img src="@/assets/img/emoticon/3.png" :alt="item.mood"> </span>
-            <span class="weather-icon" v-if="item.moodType === 4"> <img src="@/assets/img/emoticon/4.png" :alt="item.mood"> </span>
+            <span class="weather-icon" v-if="item.moodType === 3"> <img src="@/assets/img/emoticon/1.png" :alt="item.mood"> </span>
+            <span class="weather-icon" v-if="item.moodType === 4"> <img src="@/assets/img/emoticon/0.png" :alt="item.mood"> </span>
           </a>
           <a href="javascript:">
             <span class="weather-icon" v-if="item.weatherType === 0" title="晴"> <i class="el-icon-sunny"></i> </span>
@@ -21,7 +21,7 @@
             <span class="weather-icon" v-if="item.weatherType === 4" title="雨"> <i class="el-icon-heavy-rain"></i> </span>
           </a>
         </p>
-        <p class="diary-content line-clamp3" v-html="item.diaryContext"></p>
+        <p class="diary-content line-clamp3" v-html="item.diaryHtml"></p>
         <div class="footer">
           <p>{{item.dialyDate}} {{ item.nickName }}</p>
           <!-- <el-tag type="info" v-for="(subItem, index) in item.label" :key="index">{{ subItem.labelContext }}</el-tag> -->
@@ -86,6 +86,9 @@ export default {
       color: #666;
       margin-top: 30px;
       max-height: 95px;
+      img{
+        max-width: 300px;
+      }
     }
     .footer{
       clear: both;
