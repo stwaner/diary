@@ -10,8 +10,8 @@
             <el-date-picker
               v-model="ruleForm.dialyDate"
               type="datetime"
-              format="yyyy/MM/dd hh:mm:ss"
-              value-format="yyyy/MM/dd hh:mm:ss"
+              format="yyyy/MM/dd HH:mm:ss"
+              value-format="yyyy/MM/dd HH:mm:ss"
               :disabled="journalObj.dialyDate ? true : false"
               placeholder="选择日记时间">
             </el-date-picker>

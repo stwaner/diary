@@ -23,7 +23,7 @@
         </p>
         <p class="diary-content line-clamp3" v-html="item.diaryHtml"></p>
         <div class="footer">
-          <p>{{item.dialyDate}} {{ item.nickName }}</p>
+          <p>{{item.dialyDate}} by {{ item.nickName }}</p>
           <!-- <el-tag type="info" v-for="(subItem, index) in item.label" :key="index">{{ subItem.labelContext }}</el-tag> -->
           <router-link :to="{path: '/journal/update', query: { diaryId: item.diaryId }}">阅读全文</router-link>
         </div>

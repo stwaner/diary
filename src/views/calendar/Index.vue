@@ -1,5 +1,8 @@
 <template>
   <div class="calendar">
+    {{eventList}}
+    <hr>
+    {{eventContent}}
     <el-calendar>
       <!-- 这里使用的是 2.5 slot 语法，对于新项目请使用 2.6 slot 语法-->
       <template
@@ -8,15 +11,17 @@
         <!-- <p :class="data.isSelected ? 'is-selected' : ''">
           {{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}
         </p> -->
-        <p :class="rqi.indexOf(data.day) > -1 ? 'is-selected' : ''" @click="handleClickEvent(data.day)">
-          {{ data.day.split('-').slice(1).join('-') }} <br/>
-          <el-popover
+        <!-- {{date}} -->
+        <!-- {{data}} -->
+        {{ data.day.split('-').slice(1).join('-') }} <br/>
+        <p v-for="item in eventList" :key="item.eventId" :class="item.planTime.indexOf(data.day) > -1 ? 'is-selected' : ''" @click="handleClickEvent(data.day)">
+          <!-- <el-popover
             placement="right-start"
             width="200"
             trigger="hover"
-            content="这里显示详细信息">
-            <span slot="reference" class="calen-text">{{ rqi.indexOf(data.day) > -1 ? rqineirong[data.day].jqmc : '无事件'}}</span>
-          </el-popover>
+            content="这里显示详细信息"> -->
+            <span slot="reference" class="calen-text">{{ item.planTime.indexOf(data.day) > -1 ? item.eventContext : ''}}</span>
+          <!-- </el-popover> -->
         </p>
         <div class="plus-wrap">
           <el-button icon="el-icon-plus" size="mini" circle @click="handleClickEvent()" title="新增事件"></el-button>
@@ -37,8 +42,7 @@
             style="width: 100%"
             v-model="form.planTime"
             type="datetime"
-            format="yyyy/MM/dd hh:mm:ss"
-            value-format="yyyy/MM/dd hh:mm:ss"
+            format="yyyy/MM/dd HH:mm:ss"
             placeholder="选择开始时间">
           </el-date-picker>
         </el-form-item>
@@ -57,8 +61,7 @@
             style="width: 100%"
             v-model="form.remindTime"
             type="datetime"
-            format="yyyy/MM/dd hh:mm:ss"
-            value-format="yyyy/MM/dd hh:mm:ss"
+            value-format="yyyy/MM/dd HH:mm:ss"
             placeholder="选择提醒时间">
           </el-date-picker>
         </el-form-item>
@@ -78,8 +81,8 @@ export default {
   data () {
     return {
       eventId: null,
-      rqi:[],
-      rqineirong:{}, // 日期内容
+      eventList: [],
+      eventContent: {},
       orderCause: 2, // 1正序2倒序
       page: {
         pageNo: 1, // 当前页码
@@ -120,19 +123,26 @@ export default {
     /** 查询事件列表 */
     getList() {
       this.loading = true
-      const data = {}
-      // data.keywords = this.keywords
-      data['page.pageNo'] = this.page.pageNo
-      data['page.length'] = this.page.length
-      data.orderCause = this.orderCause
-      findEventList(data).then(res => {
+      // const data = {}
+      // // data.keywords = this.keywords
+      // data['page.pageNo'] = this.page.pageNo
+      // data['page.length'] = this.page.length
+      // data.orderCause = this.orderCause
+      findEventList().then(res => {
         console.log(res)
-        // this.rqi = []
-        // this.rqineirong = {}
-        // for(let i=0;i<res.length;i++){
-        //   for(var key in res[i]){
-        //     this.rqi.push(key)
-        //     this.rqineirong[key] = res[i][key]
+        // this.eventContent = {}
+        const data = res.data
+        this.eventList = data
+        // for(let i=0;i<data.length;i++){
+        //   for(var key in data[i]){
+        //     console.log(data[i].eventContext)
+        //     if (key == 'planTime') {
+        //       console.log(data[i][key])
+        //       console.log(data[i].eventContext)
+        //       // const time = data[i][key].formatter('yyyy-MM-dd')
+        //       this.eventList.push(data[i][key])
+        //       this.eventContent[data[i][key]] = data[i].eventContext
+        //     }
         //   }
         // }
       })
