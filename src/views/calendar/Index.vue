@@ -1,27 +1,19 @@
 <template>
   <div class="calendar">
-    {{eventList}}
-    <hr>
-    {{eventContent}}
     <el-calendar>
       <!-- 这里使用的是 2.5 slot 语法，对于新项目请使用 2.6 slot 语法-->
       <template
         slot="dateCell"
         slot-scope="{date, data}">
-        <!-- <p :class="data.isSelected ? 'is-selected' : ''">
-          {{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}
-        </p> -->
-        <!-- {{date}} -->
-        <!-- {{data}} -->
         {{ data.day.split('-').slice(1).join('-') }} <br/>
         <p v-for="item in eventList" :key="item.eventId" :class="item.planTime.indexOf(data.day) > -1 ? 'is-selected' : ''" @click="handleClickEvent(data.day)">
-          <!-- <el-popover
+          <el-popover
             placement="right-start"
             width="200"
             trigger="hover"
-            content="这里显示详细信息"> -->
-            <span slot="reference" class="calen-text">{{ item.planTime.indexOf(data.day) > -1 ? item.eventContext : ''}}</span>
-          <!-- </el-popover> -->
+            :content="item.eventContext">
+            <span slot="reference" class="calen-text" v-if="item.planTime.indexOf(data.day) > -1">{{ item.eventContext }}</span>
+          </el-popover>
         </p>
         <div class="plus-wrap">
           <el-button icon="el-icon-plus" size="mini" circle @click="handleClickEvent()" title="新增事件"></el-button>
