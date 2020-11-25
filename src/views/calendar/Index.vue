@@ -6,28 +6,35 @@
         slot="dateCell"
         slot-scope="{date, data}">
         {{ data.day.split('-').slice(1).join('-') }} <br/>
-        <p v-for="item in eventList" :key="item.eventId" :class="item.planTime.indexOf(data.day) > -1 ? 'is-selected' : ''" @click="handleClickEvent(data.day)">
-          <el-popover
-            placement="right-start"
-            width="200"
-            trigger="hover"
-            :content="item.eventContext">
-            <span slot="reference" class="calen-text" v-if="item.planTime.indexOf(data.day) > -1">{{ item.eventContext }}</span>
-          </el-popover>
-        </p>
+        <template v-for="item in eventList">
+          <p
+            v-if="item.planTime.indexOf(data.day.split('-').join('/')) > -1"
+            :key="item.eventId"
+            :class="item.planTime.indexOf(data.day.split('-').join('/')) > -1 ? 'is-selected' : ''"
+            @click.stop="handleClickEvent(item, item.planTime)"
+          >
+            <el-popover
+              placement="right-start"
+              width="200"
+              trigger="hover"
+              :content="item.eventContext">
+              <span slot="reference" class="calen-text">{{ item.eventContext }}</span>
+            </el-popover>
+          </p>
+        </template>
         <div class="plus-wrap">
-          <el-button icon="el-icon-plus" size="mini" circle @click="handleClickEvent()" title="新增事件"></el-button>
+          <el-button icon="el-icon-plus" size="mini" circle @click.stop="handleClickEvent(null, data.day.split('-').join('/'))" title="新增事件"></el-button>
         </div>
       </template>
     </el-calendar>
 
     <!-- 新增事件弹窗 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :before-close="cancel">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="事件标题" prop="eventContext">
           <el-input v-model="form.eventContext" placeholder="请输入事件标题" />
         </el-form-item>
-        <el-form-item label="计划时间" prop="planTime">
+        <!-- <el-form-item label="计划时间" prop="planTime">
           <el-date-picker
             clearable
             size="small"
@@ -35,9 +42,10 @@
             v-model="form.planTime"
             type="datetime"
             format="yyyy/MM/dd HH:mm:ss"
+            value-format="yyyy/MM/dd HH:mm:ss"
             placeholder="选择开始时间">
           </el-date-picker>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="消耗时长" prop="timeCost">
           <el-input v-model="form.timeCost" placeholder="请输入消耗时长" />
         </el-form-item>
@@ -53,15 +61,16 @@
             style="width: 100%"
             v-model="form.remindTime"
             type="datetime"
+            format="yyyy/MM/dd HH:mm:ss"
             value-format="yyyy/MM/dd HH:mm:ss"
             placeholder="选择提醒时间">
           </el-date-picker>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
-        <el-button v-if="title == '编辑节假日'" @click="deleteForm" :style="{ background: 'red',color:'white'}">删除</el-button>
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="danger" v-if="this.eventId" @click="deleteEvent">删除</el-button>
       </div>
     </el-dialog>
   </div>
@@ -73,8 +82,8 @@ export default {
   data () {
     return {
       eventId: null,
+      planTime: undefined,
       eventList: [],
-      eventContent: {},
       orderCause: 2, // 1正序2倒序
       page: {
         pageNo: 1, // 当前页码
@@ -85,7 +94,10 @@ export default {
       open: false,
       // 表单参数
       form: {
-        remind: false
+        eventContext: undefined,
+        timeCost: undefined,
+        remind: false,
+        remindTime: undefined
       },
       rules: { // 表单校验
         eventContext: [
@@ -93,9 +105,6 @@ export default {
         ],
         timeCost: [
           { required: true, message: "消耗时间不能为空", trigger: "blur" }
-        ],
-        planTime: [
-          { required: true, message: "计划时间不能为空", trigger: "blur" }
         ],
         remindTime: [
           { required: true, message: "提醒时间不能为空", trigger: "change" }
@@ -115,33 +124,14 @@ export default {
     /** 查询事件列表 */
     getList() {
       this.loading = true
-      // const data = {}
-      // // data.keywords = this.keywords
-      // data['page.pageNo'] = this.page.pageNo
-      // data['page.length'] = this.page.length
-      // data.orderCause = this.orderCause
       findEventList().then(res => {
-        console.log(res)
-        // this.eventContent = {}
-        const data = res.data
-        this.eventList = data
-        // for(let i=0;i<data.length;i++){
-        //   for(var key in data[i]){
-        //     console.log(data[i].eventContext)
-        //     if (key == 'planTime') {
-        //       console.log(data[i][key])
-        //       console.log(data[i].eventContext)
-        //       // const time = data[i][key].formatter('yyyy-MM-dd')
-        //       this.eventList.push(data[i][key])
-        //       this.eventContent[data[i][key]] = data[i].eventContext
-        //     }
-        //   }
-        // }
+        this.eventList = res.data
       })
     },
     // 取消按钮
     cancel() {
       this.open = false
+      this.eventId = null
       this.reset()
     },
     // 表单重置
@@ -149,7 +139,6 @@ export default {
       this.form = {
         eventContext: undefined,
         timeCost: undefined,
-        planTime: undefined,
         remind: false,
         remindTime: undefined
       }
@@ -159,49 +148,64 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           this.form['userId'] = this.userId
+          this.form['planTime'] = this.planTime
+          let msg = ''
           if (this.eventId) {
             this.form['eventId'] = this.eventId
+            this.msg = '修改成功'
+          } else {
+            this.msg = '添加成功'
           }
           if (this.form.remind) {
             this.form.remind = 1
           } else {
             this.form.remind = 0
           }
-          console.log(this.form)
           saveEvent(this.form).then(res => {
             console.log(res)
             if (res.code === 200) {
               this.open = false
-              this.$message.success('添加成功')
+              this.$message.success(this.msg)
               this.reset()
-              // this.getList()
+              this.getList()
             }
           })
         }
       })
     },
-    /** 编辑日期操作 */
-    handleClickEvent(day) {
-      if(day){
+    /** 编辑事件操作 */
+    handleClickEvent(obj, time) {
+      if(obj && obj.eventId){
         this.title = '编辑事件'
+        this.eventId = obj.eventId
+        this.planTime = obj.planTime
+        this.form = {
+          eventContext: obj.eventContext,
+          timeCost: obj.timeCost,
+        }
+        if (obj.remind == 1) {
+          this.form.remind = true
+          this.form.remindTime = obj.remindTime
+        } else {
+          this.form.remind = false
+        }
       }else{
-        let obj = {}
-        // obj.kssj = day.valueOf()
         this.title = '新增事件'
+        this.planTime = time + ' 00:00:00'
       }
       this.open = true
     },
-    deleteForm(){
-      let ids = []
-      ids.push(this.form.id)
-      delFdjjr(ids).then(response => {
-        if (response.code === 200) {
-          this.msgSuccess("删除成功")
-          this.open = false
-          this.reset()
-          this.getList()
-        }
-      })
+    /** 删除事件 */
+    deleteEvent(){
+      alert('没有接口')
+      // delFdjjr({eventId: this.eventId}).then(res => {
+      //   if (res.code === 200) {
+      //     this.$message.success("删除成功")
+      //     this.open = false
+      //     this.reset()
+      //     this.getList()
+      //   }
+      // })
     }
   }
 
@@ -224,6 +228,10 @@ export default {
     box-shadow: 2px 2px 2px #ededed;
     background: #fff;
     display: block;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .el-calendar-table .el-calendar-day{
     overflow: auto;
