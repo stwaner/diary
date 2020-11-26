@@ -34,24 +34,15 @@
         <el-form-item label="事件标题" prop="eventContext">
           <el-input v-model="form.eventContext" placeholder="请输入事件标题" />
         </el-form-item>
-        <!-- <el-form-item label="计划时间" prop="planTime">
-          <el-date-picker
-            clearable
-            size="small"
-            style="width: 100%"
-            v-model="form.planTime"
-            type="datetime"
-            format="yyyy/MM/dd HH:mm:ss"
-            value-format="yyyy/MM/dd HH:mm:ss"
-            placeholder="选择开始时间">
-          </el-date-picker>
-        </el-form-item> -->
         <el-form-item label="消耗时长" prop="timeCost">
           <el-input v-model="form.timeCost" placeholder="请输入消耗时长" />
         </el-form-item>
         <el-form-item label="提醒">
           <el-switch
-            v-model="form.remind">
+            v-model="form.remind"
+            :active-value="1"
+            :inactive-value="0"
+          >
           </el-switch>
         </el-form-item>
         <el-form-item label="提醒时间" prop="remindTime" v-if="form.remind">
@@ -77,7 +68,7 @@
 </template>
 
 <script>
-import { findEventList, saveEvent } from '@/api/events'
+import { findEventList, saveEvent, delEvent } from '@/api/events'
 export default {
   data () {
     return {
@@ -90,7 +81,7 @@ export default {
         length: 30 // 每页条数
       },
       loading: true,
-      title: "",
+      title: '',
       open: false,
       // 表单参数
       form: {
@@ -101,14 +92,14 @@ export default {
       },
       rules: { // 表单校验
         eventContext: [
-          { required: true, message: "事件内容不能为空", trigger: "blur" }
+          { required: true, message: '事件内容不能为空', trigger: 'blur' }
         ],
         timeCost: [
-          { required: true, message: "消耗时间不能为空", trigger: "blur" }
+          { required: true, message: '消耗时间不能为空', trigger: 'blur' }
         ],
         remindTime: [
-          { required: true, message: "提醒时间不能为空", trigger: "change" }
-        ],
+          { required: true, message: '提醒时间不能为空', trigger: 'change' }
+        ]
       }
     }
   },
@@ -122,39 +113,41 @@ export default {
   },
   methods: {
     /** 查询事件列表 */
-    getList() {
+    getList () {
       this.loading = true
       findEventList().then(res => {
         this.eventList = res.data
       })
     },
     // 取消按钮
-    cancel() {
+    cancel () {
       this.open = false
       this.eventId = null
       this.reset()
     },
     // 表单重置
-    reset() {
+    reset () {
       this.form = {
         eventContext: undefined,
         timeCost: undefined,
-        remind: false,
+        // remind: false,
         remindTime: undefined
       }
     },
-    /** 提交按钮 */
-    submitForm: function() {
-      this.$refs["form"].validate(valid => {
+    changeSwitch () {
+    },
+    /** 提交 */
+    submitForm: function () {
+      this.$refs.form.validate(valid => {
         if (valid) {
-          this.form['userId'] = this.userId
-          this.form['planTime'] = this.planTime
+          this.form.userId = this.userId
+          this.form.planTime = this.planTime
           let msg = ''
           if (this.eventId) {
-            this.form['eventId'] = this.eventId
-            this.msg = '修改成功'
+            this.form.eventId = this.eventId
+            msg = '修改成功'
           } else {
-            this.msg = '添加成功'
+            msg = '添加成功'
           }
           if (this.form.remind) {
             this.form.remind = 1
@@ -162,50 +155,59 @@ export default {
             this.form.remind = 0
           }
           saveEvent(this.form).then(res => {
-            console.log(res)
             if (res.code === 200) {
               this.open = false
-              this.$message.success(this.msg)
-              this.reset()
+              this.$message.success(msg)
               this.getList()
+              setTimeout(() => {
+                this.reset()
+              }, 50)
             }
           })
         }
       })
     },
     /** 编辑事件操作 */
-    handleClickEvent(obj, time) {
-      if(obj && obj.eventId){
+    handleClickEvent (obj, time) {
+      if (obj && obj.eventId) {
         this.title = '编辑事件'
         this.eventId = obj.eventId
         this.planTime = obj.planTime
         this.form = {
           eventContext: obj.eventContext,
           timeCost: obj.timeCost,
+          remind: obj.remind
         }
-        if (obj.remind == 1) {
-          this.form.remind = true
+        if (obj.remind === 1) {
           this.form.remindTime = obj.remindTime
-        } else {
-          this.form.remind = false
         }
-      }else{
+      } else {
         this.title = '新增事件'
         this.planTime = time + ' 00:00:00'
       }
       this.open = true
     },
     /** 删除事件 */
-    deleteEvent(){
-      alert('没有接口')
-      // delFdjjr({eventId: this.eventId}).then(res => {
-      //   if (res.code === 200) {
-      //     this.$message.success("删除成功")
-      //     this.open = false
-      //     this.reset()
-      //     this.getList()
-      //   }
-      // })
+    deleteEvent () {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        delEvent({ eventId: this.eventId, userId: this.userId }).then(res => {
+          if (res.code === 200) {
+            this.$message.success('删除成功！')
+            this.open = false
+            this.reset()
+            this.getList()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 
@@ -213,9 +215,6 @@ export default {
 </script>
 
 <style lang="scss">
-.is-selected {
-  // color: orange;
-}
 .calendar{
   max-width: 1200px;
   margin: 50px auto 20px;
@@ -237,7 +236,7 @@ export default {
     overflow: auto;
     min-height: 120px;
     &::-webkit-scrollbar {
-      width: 4px;    
+      width: 4px;
       /*height: 4px;*/
     }
     &::-webkit-scrollbar-thumb {

@@ -2,7 +2,8 @@ import { request } from '@/utils/request'
 
 const eventApi = {
   list: '/api/event/eventList', // 事件列表
-  eventSave: '/api/event/save' // 学习保存
+  eventSave: '/api/event/save', // 事件编辑/添加
+  eventDel: '/api/event/delete' // 事件删除
 }
 
 export function findEventList (params) {
@@ -20,6 +21,16 @@ export function saveEvent (data) {
     xhrFields: { withCredentials: true },
     crossDomain: true,
     url: eventApi.eventSave,
+    method: 'post',
+    params: data
+  })
+}
+
+export function delEvent (data) {
+  return request({
+    xhrFields: { withCredentials: true },
+    crossDomain: true,
+    url: eventApi.eventDel,
     method: 'post',
     params: data
   })
