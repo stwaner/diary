@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import ElementUI from 'element-ui'
+// import VueAMap from 'vue-amap'
 import App from './App.vue'
 import axios from 'axios'
 import VueRouter from 'vue-router'
@@ -19,6 +20,7 @@ Vue.prototype.$axios = axios
 console.log(process.env.VUE_APP_BASE_URL)
 Vue.use(VueRouter)
 Vue.use(ElementUI)
+// Vue.use(VueAMap)
 
 new Vue({
   router,

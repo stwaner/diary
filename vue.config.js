@@ -113,7 +113,11 @@ module.exports = {
           }
         },
         minimizer: [
-          new UglifyJsPlugin({})
+          new UglifyJsPlugin({
+            compress: {
+              warnings: false
+            }
+          })
         ]
       }
       Object.assign(config, {
