@@ -114,8 +114,18 @@ module.exports = {
         },
         minimizer: [
           new UglifyJsPlugin({
-            compress: {
-              warnings: false
+            parallel: true,
+            cache: true,
+            uglifyOptions: {
+              ie8: false,
+              ecma: 5,
+              compress: {
+                keep_fnames: true,
+                warnings: false
+              },
+              mangle: {
+                keep_fnames: true
+              }
             }
           })
         ]
