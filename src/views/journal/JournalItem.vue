@@ -85,7 +85,7 @@ export default {
       font-size: 14px;
       color: #666;
       margin-top: 30px;
-      max-height: 95px;
+      // max-height: 95px;
       img{
         max-width: 300px;
       }
