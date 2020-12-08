@@ -17,10 +17,11 @@ import store from './store'
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios
 
-console.log(process.env.VUE_APP_BASE_URL)
+// console.log(process.env.VUE_APP_BASE_URL)
 Vue.use(VueRouter)
 Vue.use(ElementUI)
 Vue.use(VueAMap)
+
 VueAMap.initAMapApiLoader({
   key: '8d168cf9262841cf32d4e72fbfd49c49',
   plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.Geolocation', 'AMap.Geocoder', 'AMap.AMapManager', 'AMap.Marker'],
