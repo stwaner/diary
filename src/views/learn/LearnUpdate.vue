@@ -123,7 +123,7 @@ export default {
         if (valid) {
           const data = {}
           let msg = ''
-          data.userId = this.$store.state.userInfo.userId || this.userId
+          data.userId = this.$store.state.login.userInfo.userId || this.userId
           data.learnTitle = this.ruleForm.learnTitle
           data.tag = this.dynamicTags.join(',')
           data.learnHtml = this.ruleForm.learnHtml

@@ -4,7 +4,7 @@ const travelApi = {
   travelList: '/api/travel/list' // 登录
 }
 
-export function getTravelList (params) {
+export function Traveling (params) {
   return request({
     xhrFields: { withCredentials: true },
     crossDomain: true,

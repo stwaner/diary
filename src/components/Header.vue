@@ -61,7 +61,7 @@ export default {
   },
   computed: {
     userName () {
-      return (JSON.parse(window.localStorage.getItem('userInfo'))).nickName || this.$store.state.userInfo.userName
+      return (JSON.parse(window.localStorage.getItem('userInfo'))).nickName || this.$store.state.login.userInfo.userName
     }
   },
   methods: {
@@ -73,7 +73,7 @@ export default {
       this.$confirm('确认要退出吗？').then(_ => {
         logout().then(res => {
           if (res.code === 200) {
-            this.$store.dispatch('setUserStatus', null)
+            this.$store.dispatch('login/setUserStatus', null)
             this.$router.push({ path: '/login' })
           }
         })

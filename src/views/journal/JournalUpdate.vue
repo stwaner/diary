@@ -131,7 +131,7 @@ export default {
       this.$refs[formName].validate(async (valid, values) => {
         if (valid) {
           const data = {}
-          data.userId = this.$store.state.userInfo.userId || this.userId
+          data.userId = this.$store.state.login.userInfo.userId || this.userId
           data.dialyDate = this.ruleForm.dialyDate.replaceAll("-","/")
           data.mood = this.ruleForm.mood
           data.moodType = this.ruleForm.mood_type

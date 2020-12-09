@@ -43,7 +43,7 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     if (to.matched.some(record => record.meta.requireAuth)) { // 判断该路由是否需要登录权限
-      store.dispatch('GetInfo').then(user => {
+      store.dispatch('login/GetInfo').then(user => {
         if (to.path === loginPath) { // 判断缓存里面是否有 userName  //在登录的时候设置它的值
           next({ path: '/home' })
         } else {
