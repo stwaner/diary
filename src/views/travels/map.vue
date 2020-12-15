@@ -43,11 +43,11 @@ export default {
       circles: [
         {
           center: [0, 0],
-          radius: "4",
-          fillColor: "#393e43",
-          strokeColor: "#393e43",
-          strokeOpacity: "0.2",
-          strokeWeight: "30"
+          radius: '4',
+          fillColor: '#393e43',
+          strokeColor: '#393e43',
+          strokeOpacity: '0.2',
+          strokeWeight: '30'
         }
       ],
       // contextMenuPositon: null,
@@ -74,7 +74,7 @@ export default {
         click: (e) => {
           console.log(e.lnglat.lng, e.lnglat.lat)
         }
-      },
+      }
       // plugin: [
       //   'ToolBar',
       //   'Scale',
@@ -119,28 +119,28 @@ export default {
 
       // 浏览器定位
       var geolocation = new AMap.Geolocation({
-        enableHighAccuracy: true,//是否使用高精度定位，默认:true
-        timeout: 10000,          //超过10秒后停止定位，默认：5s
-        buttonPosition:'RB',    //定位按钮的停靠位置
-        buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-        zoomToAccuracy: true,   //定位成功后是否自动调整地图视野到定位点
+        enableHighAccuracy: true, // 是否使用高精度定位，默认:true
+        timeout: 10000, // 超过10秒后停止定位，默认：5s
+        buttonPosition: 'RB', // 定位按钮的停靠位置
+        buttonOffset: new AMap.Pixel(10, 20), // 定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+        zoomToAccuracy: true, // 定位成功后是否自动调整地图视野到定位点
         markerOptions: {
           content: ' '
         }
       })
       this.map.addControl(geolocation)
-      geolocation.getCurrentPosition((status,result)=>{
-        if(status=='complete'){
+      geolocation.getCurrentPosition((status, result) => {
+        if (status === 'complete') {
           const lng = result.position.lng
           const lat = result.position.lat
           this.circles[0].center = [lng, lat]
           // onComplete(result)
-        }else{
+        } else {
           // onError(result)
           this.$message.err('定位失败')
         }
       })
-      
+
       // this.selfLocation()
     },
     // 自身定位

@@ -1,6 +1,6 @@
 <template>
   <div class="travels-wrapper">
-    <Map :markers="markers" :prompt="prompt" :promptInfo="promptInfo" @callbackComponent="callbackComponent" />
+    <Map :markers="markers" :infoWindow="infoWindow" @callbackComponent="callbackComponent" />
     <h2 class="travels-title">我的旅行游记</h2>
     <div class="btn-wrap">
       <el-button class="add-btn" icon="el-icon-plus" @click="handleAddCities">添加城市</el-button>
@@ -40,7 +40,7 @@ export default {
     return {
       markers: [],
       prompt: [],
-      promptInfo: {},
+      infoWindow: {},
       activities: [{
         country: '湖北',
         city: '黄冈',
@@ -83,26 +83,27 @@ export default {
       const that = this
       const res = await Traveling()
       if (res.code === 200) {
-        let data = res.data
+        const data = res.data
         data.forEach((ele, index) => {
+          // eslint-disable-next-line no-unused-expressions
           ele.position = [ele.longitude, ele.latitude],
           ele.events = {
             click: () => {
-              console.log(that.prompt)
+              console.log(that.prompt, index)
               that.prompt.forEach(item => {
                 item.visible = false
               })
-              that.promptInfo = that.prompt[index]
+              that.infoWindow = that.prompt[index]
               that.$nextTick(() => {
-                that.promptInfo.visible = true
+                that.infoWindow.visible = true
               })
             }
           },
           ele.visible = true,
           ele.offset = [0, 0], // 窗体偏移
-          ele.draggable = false // 不可移动
-          ele.markerLabel = {content: index+1,offset: [10, 10]},
-          ele.content = '<img src="'+ require('@/assets/img/icon/marker-icon.png') +'" />'
+          ele.draggable = false, // 不可移动
+          ele.markerLabel = { content: index + 1, offset: [10, 10] },
+          ele.content = '<img src="' + require('@/assets/img/icon/marker-icon.png') + '" />'
           prompt.push({
             position: [ele.longitude, ele.latitude],
             offset: [-10, -15], // 窗体偏移

@@ -25,7 +25,14 @@
           :title="marker.travelTitle"
           :vid="'marker'+m"
         ></el-amap-marker>
-        <el-amap-info-window v-if="!JSON.stringify(promptInfo) === '{}'" :position="promptInfo.position" :visible="promptInfo.visible" :content="promptInfo.content" :closeWhenClickMap="closeWhenClickMap"></el-amap-info-window>
+        <el-amap-info-window
+          v-if="!JSON.stringify(infoWindow) === '{}'"
+          :position="infoWindow.position"
+          :offset="infoWindow.offset"
+          :visible="infoWindow.visible"
+          :content="infoWindow.content"
+          :closeWhenClickMap="closeWhenClickMap"
+        ></el-amap-info-window>
       </el-amap>
       <nav-bar />
     </div>
@@ -33,9 +40,11 @@
 </template>
 
 <script>
+// import AMap from 'AMap'
 import navBar from './navbar.vue'
 import { AMapManager, lazyAMapApiLoaderInstance } from 'vue-amap'
 import { SelfLocation } from './location'
+import { RightMenuContext } from './rightMenu'
 const amapManager = new AMapManager()
 
 export default {
@@ -45,11 +54,7 @@ export default {
       type: Array,
       default: []
     },
-    prompt: {
-      type: Array,
-      default: []
-    },
-    promptInfo: {
+    infoWindow: {
       type: Object
     }
   },
@@ -64,14 +69,15 @@ export default {
       circles: [
         {
           center: [0, 0],
-          radius: "4",
-          fillColor: "#393e43",
-          strokeColor: "#393e43",
-          strokeOpacity: "0.2",
-          strokeWeight: "30"
+          radius: '4',
+          fillColor: '#393e43',
+          strokeColor: '#393e43',
+          strokeOpacity: '0.2',
+          strokeWeight: '30'
         }
       ],
-      // contextMenuPositon: null,
+      contextMenuPositon: null,
+      mouseTool: null,
       events: {
         // 地图初始化
         init (o) {
@@ -105,7 +111,7 @@ export default {
   },
   components: { navBar },
   watch: {
-    '$store.state.location.selfLocation'(val) {
+    '$store.state.location.selfLocation' (val) {
       this.selfLocation()
     }
   },
@@ -118,7 +124,7 @@ export default {
       })
       setTimeout(() => {
         this.selfLocation()
-      }, 100);
+      }, 100)
     },
     // 自身定位
     selfLocation () {
@@ -134,15 +140,17 @@ export default {
       const lat = data.position.lat
       this.circles[0].center = [lng, lat]
     },
+    // eslint-disable-next-line handle-callback-err
     onError (err) {
       this.$message.error('定位失败')
     },
     // 地图绑定鼠标右击事件——弹出右键菜单
     rightClickFun (e) {
-      // console.log(e)
+      console.log(e)
       // 创建右键菜单
-      const menu = new VueAMap.ContextMenu(this.map)
       this.contextMenuPositon = null
+      let menu = new AMap.ContextMenu(this.map) // 创建右键菜单
+
       var content = []
       content.push("<div class='info context_menu'>")
       content.push("  <p onclick='menu.zoomMenu(0)'>缩小</p>")
@@ -150,11 +158,11 @@ export default {
       content.push("  <p class='split_line' onclick='menu.distanceMeasureMenu()'>距离量测</p>")
       content.push("  <p onclick='menu.addMarkerMenu()'>添加标记</p>")
       content.push('</div>')
-      // 通过content自定义右键菜单内容
-      this.contextMenu = new VueAMap.ContextMenu({ isCustom: true, content: content.join('') })
 
-      menu.contextMenu.open(this.map, e.lnglat)
-      menu.contextMenuPositon = e.lnglat // 右键菜单位置
+      // 通过content自定义右键菜单内容
+      this.contextMenu = new AMap.ContextMenu({ isCustom: true, content: content.join('') })
+
+      this.mouseTool = new AMap.MouseTool(this.map) // 地图中添加鼠标工具MouseTool插件
 
       // ContextMenu.prototype.zoomMenu = function zoomMenu (tag) { // 右键菜单缩放地图
       //   if (tag === 0) {
@@ -177,7 +185,7 @@ export default {
       //   })
       //   this.contextMenu.close()
       // }
-      // menu.contextMenu.open(map, e.lnglat)
+      menu.contextMenu.open(this.map, e.lnglat)
     }
   }
 }

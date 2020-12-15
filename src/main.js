@@ -25,7 +25,7 @@ Vue.use(VueAMap)
 VueAMap.initAMapApiLoader({
   key: '8d168cf9262841cf32d4e72fbfd49c49',
   // plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.Geolocation', 'AMap.Geocoder', 'AMap.AMapManager', 'AMap.Marker'],
-  plugin: ['AMap.Geolocation', 'AMap.ToolBar', 'AMap.Scale', 'AMap.MapType'],
+  plugin: ['AMap.Geolocation', 'AMap.ContextMenu', 'AMap.ToolBar', 'AMap.Scale', 'AMap.MapType', 'AMap.Circle'],
   // 默认高德 sdk 版本为 1.4.4
   v: '1.4.4'
 })
