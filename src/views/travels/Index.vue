@@ -1,6 +1,5 @@
 <template>
   <div class="travels-wrapper">
-    <Map :markers="markers" :infoWindow="infoWindow" @callbackComponent="callbackComponent" />
     <h2 class="travels-title">我的旅行游记</h2>
     <div class="btn-wrap">
       <el-button class="add-btn" icon="el-icon-plus" @click="handleAddCities">添加城市</el-button>
@@ -32,15 +31,11 @@
 </template>
 
 <script>
-import Map from '../amap/index.vue'
 import { Traveling } from '@/api/travel.js'
 
 export default {
   data () {
     return {
-      markers: [],
-      prompt: [],
-      infoWindow: {},
       activities: [{
         country: '湖北',
         city: '黄冈',
@@ -64,57 +59,15 @@ export default {
       }]
     }
   },
-  components: { Map },
   methods: {
     handleAddCities () {
       this.$message.info('添加城市')
     },
-    callbackComponent (params) {
-      params.function && this[params.function](params.data)
-    },
-    // 地图初始化完成回调
-    loadMap () {
-      this.getTravel()
-    },
     // 获取游记标记
     async getTravel () {
-      const markers = []
-      const prompt = []
-      const that = this
       const res = await Traveling()
       if (res.code === 200) {
-        const data = res.data
-        data.forEach((ele, index) => {
-          // eslint-disable-next-line no-unused-expressions
-          ele.position = [ele.longitude, ele.latitude],
-          ele.events = {
-            click: () => {
-              console.log(that.prompt, index)
-              that.prompt.forEach(item => {
-                item.visible = false
-              })
-              that.infoWindow = that.prompt[index]
-              that.$nextTick(() => {
-                that.infoWindow.visible = true
-              })
-            }
-          },
-          ele.visible = true,
-          ele.offset = [0, 0], // 窗体偏移
-          ele.draggable = false, // 不可移动
-          ele.markerLabel = { content: index + 1, offset: [10, 10] },
-          ele.content = '<img src="' + require('@/assets/img/icon/marker-icon.png') + '" />'
-          prompt.push({
-            position: [ele.longitude, ele.latitude],
-            offset: [-10, -15], // 窗体偏移
-            visible: false,
-            content: `<div class="prompt">
-                        <span class="title">${ele.travelTitle}</span>
-                      </div>`
-          })
-        })
-        this.markers = data
-        this.prompt = prompt
+        console.log(res.data)
       }
     }
   }

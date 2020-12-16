@@ -1,263 +1,94 @@
 <template>
   <div>
     <div class="amap-page-container">
-      <!-- :plugin="plugin"  -->
-      <el-amap ref="map" vid="amapDemo" :amap-manager="amapManager" :center="center" :zoom="zoom" :events="events" class="amap-demo">
-        <!-- 覆盖物 - 圆 -->
-        <el-amap-circle
-          v-for="(circle, i) in circles"
-          :key="i"
-          :center="circle.center"
-          :radius="circle.radius"
-          :fillColor="circle.fillColor"
-          :strokeColor="circle.strokeColor"
-          :strokeOpacity="circle.strokeOpacity"
-          :strokeWeight="circle.strokeWeight"
-        ></el-amap-circle>
-        <!-- <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position" :events="marker.events" :visible="marker.visible" :draggable="marker.draggable" :vid="index"></el-amap-marker> -->
-        <!-- <el-amap-info-window v-if="window" :position="window.position" :visible="window.visible" :content="window.content"></el-amap-info-window> -->
-      </el-amap>
-      <!-- <div class="toolbar">
-        <p v-if="loaded">
-          location: lng = {{ lng }} lat = {{ lat }}
-        </p>
-        <p v-else>正在定位...</p>
-      </div> -->
+      <div id="container" class="amap-container"></div>
     </div>
   </div>
 </template>
 
 <script>
-import { AMapManager, lazyAMapApiLoaderInstance } from 'vue-amap'
-const amapManager = new AMapManager()
+import AMap from 'AMap' // 引入高德地图
+import { SelfLocation } from '../amap/location'
 
 export default {
   name: 'amap',
   data () {
-    const self = this
     return {
-      map: null,
-      amapManager,
-      center: [121.59996, 31.197646],
-      zoom: 18,
-      circles: [
-        {
-          center: [0, 0],
-          radius: '4',
-          fillColor: '#393e43',
-          strokeColor: '#393e43',
-          strokeOpacity: '0.2',
-          strokeWeight: '30'
-        }
-      ],
-      // contextMenuPositon: null,
-      markers: [],
-      windows: [],
-      window: '',
-      lng: 0,
-      lat: 0,
-      loaded: false,
-      events: {
-        // 地图初始化
-        init (o) {
-          // 兼容高德地图
-          lazyAMapApiLoaderInstance.load().then(() => {
-            self.initMap()
-            // self.initMarker()
-          })
-        },
-        moveend: () => {
-        },
-        rightclick: (e) => {
-          this.rightClickFun(e)
-        },
-        click: (e) => {
-          console.log(e.lnglat.lng, e.lnglat.lat)
-        }
-      }
-      // plugin: [
-      //   'ToolBar',
-      //   'Scale',
-      //   {
-      //     pName: 'MapType', // 图层切换，用于几个常用图层切换显示
-      //     defaultType: 0,
-      //     events: {
-      //       init (o) {
-      //       }
-      //     }
-      //   }, {
-      //     pName: 'Geolocation', // 定位，提供了获取用户当前准确位置、所在城市的方法
-      //     events: {
-      //       init (o) {
-      //         // o 是高德地图定位插件实例
-      //         o.getCurrentPosition((status, result) => {
-      //           if (result && result.position) {
-      //             self.lng = result.position.lng
-      //             self.lat = result.position.lat
-      //             self.center = [self.lng, self.lat]
-      //             self.loaded = true
-      //             self.$nextTick()
-      //           }
-      //         })
-      //       }
-      //     }
-      //   }
-      // ]
+      map: null
     }
   },
-  created () {
-    // this.initMarker()
+  mounted () {
+    this.init()
   },
   methods: {
-    initMap () {
-      this.map = amapManager.getMap() // 地图实例
-
-      // 地图初始化完成回调
-      this.$emit('callbackComponent', {
-        function: 'loadMap'
+    init () {
+      const _this = this
+      this.map = new AMap.Map('container', {
+        resizeEnable: true,
+        zoom: 13
       })
-
-      // 浏览器定位
-      var geolocation = new AMap.Geolocation({
-        enableHighAccuracy: true, // 是否使用高精度定位，默认:true
-        timeout: 10000, // 超过10秒后停止定位，默认：5s
-        buttonPosition: 'RB', // 定位按钮的停靠位置
-        buttonOffset: new AMap.Pixel(10, 20), // 定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-        zoomToAccuracy: true, // 定位成功后是否自动调整地图视野到定位点
-        markerOptions: {
-          content: ' '
-        }
+      AMap.plugin(['AMap.ToolBar', 'AMap.Scale'], function () {
+        _this.map.addControl(new AMap.ToolBar())
+        _this.map.addControl(new AMap.Scale())
       })
-      this.map.addControl(geolocation)
-      geolocation.getCurrentPosition((status, result) => {
-        if (status === 'complete') {
-          const lng = result.position.lng
-          const lat = result.position.lat
-          this.circles[0].center = [lng, lat]
-          // onComplete(result)
-        } else {
-          // onError(result)
-          this.$message.err('定位失败')
-        }
+      this.map.on('complete', function () {
+        _this.selfLocation()
       })
-
-      // this.selfLocation()
     },
-    // 自身定位
-    // selfLocation () {
-    //   SelfLocation({
-    //     map: this.map,
-    //     complete: (val) => this.onComplete(val)
-    //   })
-    // },
-    // onComplete (data) {
-    //   const lng = data.position.lng
-    //   const lat = data.position.lat
-    //   console.log(lng, lat)
-    // },
-    // 地图上添加标记点和详细信息
-    point (data) {
-      const markers = []
-      const windows = []
-      const self = this
-
-      data.forEach((ele, index) => {
-        markers.push({
-          position: [ele.longitude, ele.latitude],
-          events: {
-            click: () => {
-              self.windows.forEach(window => {
-                window.visible = false
+    // 获取定位
+    selfLocation () {
+      console.log('定位中..............')
+      SelfLocation({
+        map: this.map,
+        complete: (val) => this.onComplete(val),
+        error: (err) => this.onError(err)
+      })
+    },
+    onComplete (data) {
+      console.log('定位成功信息：', data)
+      var position = [data.position.lng, data.position.lat]
+      this.map.setCenter(position)
+    },
+    // eslint-disable-next-line handle-callback-err
+    onError (data) {
+      console.log('定位失败错误：', data)
+      this.getLngLatLocation()
+    },
+    // 根据ip定位
+    getLngLatLocation () {
+      AMap.plugin('AMap.CitySearch', function () {
+        var citySearch = new AMap.CitySearch()
+        citySearch.getLocalCity(function (status, result) {
+          if (status === 'complete' && result.info === 'OK') {
+            // 查询成功，result即为当前所在城市信息
+            console.log('通过ip获取当前城市：', result)
+            // 此时，只是获取到了地址的经纬度，要想更详细饿地址信息，就要使用逆向解析
+            // 逆向地理编码
+            AMap.plugin('AMap.Geocoder', function () {
+              var geocoder = new AMap.Geocoder({
+                // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
+                city: result.adcode
               })
-              self.window = self.windows[index]
-              self.$nextTick(() => {
-                self.window.visible = true
+              var lnglat = result.rectangle.split(';')[0].split(',')
+              geocoder.getAddress(lnglat, function (status, data) {
+                if (status === 'complete' && data.info === 'OK') {
+                  // result为对应的地理位置详细信息
+                  console.log(data)
+                }
               })
-            }
-          },
-          visible: true,
-          offset: [0, 0], // 窗体偏移
-          draggable: false, // 不可移动
-          title: `<span>${ele.travelTitle}</span>`
-        })
-        windows.push({
-          position: [ele.longitude, ele.latitude],
-          // offset: [5, -15], // 窗体偏移
-          visible: false,
-          content: `<div class="prompt">
-                      <span class="title">${ele.travelTitle}</span>
-                    </div>`
+            })
+          }
         })
       })
-      this.markers = markers
-      this.windows = windows
-    },
-    // 地图绑定鼠标右击事件——弹出右键菜单
-    rightClickFun (e) {
-      // console.log(e)
-      // 创建右键菜单
-      const menu = new VueAMap.ContextMenu(this.map)
-      this.contextMenuPositon = null
-      var content = []
-      content.push("<div class='info context_menu'>")
-      content.push("  <p onclick='menu.zoomMenu(0)'>缩小</p>")
-      content.push("  <p class='split_line' onclick='menu.zoomMenu(1)'>放大</p>")
-      content.push("  <p class='split_line' onclick='menu.distanceMeasureMenu()'>距离量测</p>")
-      content.push("  <p onclick='menu.addMarkerMenu()'>添加标记</p>")
-      content.push('</div>')
-      // 通过content自定义右键菜单内容
-      this.contextMenu = new VueAMap.ContextMenu({ isCustom: true, content: content.join('') })
-
-      menu.contextMenu.open(this.map, e.lnglat)
-      menu.contextMenuPositon = e.lnglat // 右键菜单位置
-
-      // ContextMenu.prototype.zoomMenu = function zoomMenu (tag) { // 右键菜单缩放地图
-      //   if (tag === 0) {
-      //     map.zoomOut()
-      //   }
-      //   if (tag === 1) {
-      //     map.zoomIn()
-      //   }
-      //   this.contextMenu.close()
-      // }
-      // ContextMenu.prototype.distanceMeasureMenu = function () { // 右键菜单距离量测
-      //   // this.mouseTool.rule()
-      //   this.contextMenu.close()
-      // }
-      // ContextMenu.prototype.addMarkerMenu = function () { // 右键菜单添加Marker标记
-      //   // this.mouseTool.close()
-      //   var marker = new AMap.Marker({
-      //     map: map,
-      //     position: this.contextMenuPositon // 基点位置
-      //   })
-      //   this.contextMenu.close()
-      // }
-      // menu.contextMenu.open(map, e.lnglat)
     }
   }
 }
 </script>
 
 <style lang="scss">
-.amap-page-container{
-  .amap-demo {
-    width: 1000px;
-    height: 600px;
-    margin: 0 auto;
-    .amap-info-content{
-      padding: 15px 25px;
-    }
-    .prompt {
-      color: #333;
-    }
-    .amap-info-close{
-      // display: none;
-    }
-  }
-  .amap-controls{
-    .amap-maptype-list{
-      height: 33px!important;
-    }
-  }
+.amap-container {
+  width: 1000px;
+  height: 600px;
+  margin: 0 auto;
 }
 </style>

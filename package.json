@@ -37,7 +37,6 @@
     "postcss-loader": "^3.0.0",
     "raw-loader": "^0.5.1",
     "vue": "^2.6.11",
-    "vue-amap": "^0.5.10",
     "vue-router": "^3.4.7",
     "vuex": "^3.5.1"
   },
