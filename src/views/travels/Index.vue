@@ -1,6 +1,7 @@
 <template>
   <div class="travels-wrapper">
     <h2 class="travels-title">我的旅行游记</h2>
+    <a-map :markers="markers" />
     <div class="btn-wrap">
       <el-button class="add-btn" icon="el-icon-plus" @click="handleAddCities">添加城市</el-button>
     </div>
@@ -32,10 +33,12 @@
 
 <script>
 import { Traveling } from '@/api/travel.js'
+import AMap from './map.vue'
 
 export default {
   data () {
     return {
+      markers: [],
       activities: [{
         country: '湖北',
         city: '黄冈',
@@ -59,6 +62,10 @@ export default {
       }]
     }
   },
+  components: { AMap },
+  created () {
+    this.getTravel()
+  },
   methods: {
     handleAddCities () {
       this.$message.info('添加城市')
@@ -68,6 +75,7 @@ export default {
       const res = await Traveling()
       if (res.code === 200) {
         console.log(res.data)
+        this.markers = res.data
       }
     }
   }
