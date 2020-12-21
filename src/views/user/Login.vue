@@ -63,7 +63,7 @@ export default {
             // console.log(res.data)
             _this.$message.success('登录成功')
             const token = getCookie('JSESSIONID')
-            _this.$store.dispatch('setToken', token)
+            _this.$store.dispatch('login/setToken', token)
             // _this.$store.dispatch('setIsLogin', true)
             _this.$router.push({ path: '/' })
           } else {

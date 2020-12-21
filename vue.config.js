@@ -89,6 +89,9 @@ module.exports = {
     //     translationsOutputFile: /app/
     //   })
     // ]
+    config.externals = {
+      AMap: 'AMap' // 高德地图配置
+    }
     if (process.env.NODE_ENV === 'production') {
       // 为生产环境修改配置...
       config.mode = 'production'
@@ -113,7 +116,21 @@ module.exports = {
           }
         },
         minimizer: [
-          new UglifyJsPlugin({})
+          new UglifyJsPlugin({
+            parallel: true,
+            cache: true,
+            uglifyOptions: {
+              ie8: false,
+              ecma: 5,
+              compress: {
+                keep_fnames: true,
+                warnings: false
+              },
+              mangle: {
+                keep_fnames: true
+              }
+            }
+          })
         ]
       }
       Object.assign(config, {

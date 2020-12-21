@@ -16,7 +16,7 @@ import store from './store'
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios
 
-console.log(process.env.VUE_APP_BASE_URL)
+// console.log(process.env.VUE_APP_BASE_URL)
 Vue.use(VueRouter)
 Vue.use(ElementUI)
 
