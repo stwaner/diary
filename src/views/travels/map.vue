@@ -6,20 +6,21 @@
     <el-dialog
       custom-class="amap-dialog"
       :title="null"
+      :close-on-click-modal="false"
       :visible.sync="dialogVisible"
-      width="30%"
+      width="40%"
       :before-close="() => { dialogVisible=false }">
-      <el-form :model="form">
-        <el-form-item label="游记标题" :label-width="formLabelWidth">
+      <el-form :model="form" ref="ruleForm" :rules="rules">
+        <el-form-item label="游记标题" :label-width="formLabelWidth" prop="name">
           <el-input v-model="form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="游记心得" :label-width="formLabelWidth">
+        <el-form-item label="游记心得" :label-width="formLabelWidth" prop="note">
           <el-input v-model="form.note" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -39,10 +40,24 @@ export default {
       contextMenu: null,
       contextMenuPositon: null,
       lnglat: [0, 0],
+      geocoder: null,
       dialogVisible: false,
       form: {
         name: '',
-        note: ''
+        note: '',
+        province: '',
+        district: '',
+        citycode: '',
+        address: ''
+      },
+      rules: {
+        name: [
+          { required: true, message: '请输入游记主题', trigger: 'blur' },
+          { min: 2, max: 8, message: '长度在 2 到 8 个字符', trigger: 'blur' }
+        ],
+        note: [
+          { required: true, message: '请输入游记心得', trigger: 'blur' }
+        ]
       },
       formLabelWidth: '90px'
     }
@@ -79,9 +94,11 @@ export default {
       })
       // 地图绑定鼠标右击事件——弹出右键菜单
       this.map.on('rightclick', function (e) {
+        console.log(e)
         _this.lnglat = [e.lnglat.lng, e.lnglat.lat]
         _this.contextMenu.open(_this.map, e.lnglat)
         _this.contextMenuPositon = e.lnglat
+        _this.geocoderDone(_this.lnglat) // 传入经纬度获取城市详细地址
       })
     },
     // 右键菜单
@@ -90,21 +107,6 @@ export default {
       // 右键添加Marker标记
       this.contextMenu.addItem('添加标记', function (e) {
         _this.dialogVisible = true
-        // const data = {}
-        // data.userId = _this.$store.state.login.userInfo.userId || this.userId
-        // data.longitude = _this.lnglat[0]
-        // data.latitude = _this.lnglat[1]
-        // data.travelTitle = '嘿嘿'
-        // data.travelNote = '嘿嘿'
-        // saveTravel(data).then(res => {
-        //   console.log(res)
-        //   if (res.code === 200) {
-        //     var marker = new AMap.Marker({
-        //       map: _this.map,
-        //       position: _this.contextMenuPositon // 基点位置
-        //     })
-        //   }
-        // })
       }, 0)
       // 右键放大
       this.contextMenu.addItem('放大一级', function () {
@@ -118,6 +120,32 @@ export default {
       this.contextMenu.addItem('缩放至全国范围', function (e) {
         _this.map.setZoomAndCenter(4, [108.946609, 34.262324])
       }, 3)
+    },
+    submitForm(formName) {
+      const _this = this
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          const data = {}
+          data.userId = _this.$store.state.login.userInfo.userId || _this.userId
+          data.longitude = _this.lnglat[0]
+          data.latitude = _this.lnglat[1]
+          data.travelTitle = _this.form.name
+          data.travelNote = _this.form.note
+          saveTravel(data).then(res => {
+            console.log(res)
+            if (res.code === 200) {
+              var marker = new AMap.Marker({
+                map: _this.map,
+                position: _this.contextMenuPositon // 基点位置
+              })
+              _this.dialogVisible = false
+            }
+          })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     },
     // 获取定位
     selfLocation () {
@@ -176,6 +204,7 @@ export default {
     },
     // 根据ip定位
     getLngLatLocation () {
+      const _this = this
       AMap.plugin('AMap.CitySearch', function () {
         var citySearch = new AMap.CitySearch()
         citySearch.getLocalCity(function (status, result) {
@@ -183,20 +212,23 @@ export default {
             // 查询成功，result即为当前所在城市信息
             console.log('通过ip获取当前城市：', result)
             // 此时，只是获取到了地址的经纬度，要想更详细饿地址信息，就要使用逆向解析
-            // 逆向地理编码
-            AMap.plugin('AMap.Geocoder', function () {
-              var geocoder = new AMap.Geocoder({
-                // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
-                city: result.adcode
-              })
-              var lnglat = result.rectangle.split(';')[0].split(',')
-              geocoder.getAddress(lnglat, function (status, data) {
-                if (status === 'complete' && data.info === 'OK') {
-                  // result为对应的地理位置详细信息
-                  console.log(data)
-                }
-              })
-            })
+            _this.geocoderDone(result.rectangle.split(';')[0].split(','))
+          }
+        })
+      })
+    },
+    // 逆向地理编码
+    geocoderDone (lnglat) {
+      const _this = this
+      AMap.plugin('AMap.Geocoder', function () {
+        if (!_this.geocoder) {
+          _this.geocoder = new AMap.Geocoder()
+        }
+        _this.geocoder.getAddress(lnglat, function (status, data) {
+          if (status === 'complete' && data.info === 'OK') {
+            // result为对应的地理位置详细信息
+            console.log(data)
+            // _this.form.address = data.regeocode.formattedAddress
           }
         })
       })
