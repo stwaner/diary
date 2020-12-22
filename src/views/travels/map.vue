@@ -45,10 +45,7 @@ export default {
       form: {
         name: '',
         note: '',
-        province: '',
-        district: '',
-        citycode: '',
-        address: ''
+        citycode: ''
       },
       rules: {
         name: [
@@ -94,7 +91,6 @@ export default {
       })
       // 地图绑定鼠标右击事件——弹出右键菜单
       this.map.on('rightclick', function (e) {
-        console.log(e)
         _this.lnglat = [e.lnglat.lng, e.lnglat.lat]
         _this.contextMenu.open(_this.map, e.lnglat)
         _this.contextMenuPositon = e.lnglat
@@ -105,7 +101,7 @@ export default {
     openRightMenu () {
       const _this = this
       // 右键添加Marker标记
-      this.contextMenu.addItem('添加标记', function (e) {
+      this.contextMenu.addItem('添加游记', function (e) {
         _this.dialogVisible = true
       }, 0)
       // 右键放大
@@ -131,6 +127,7 @@ export default {
           data.latitude = _this.lnglat[1]
           data.travelTitle = _this.form.name
           data.travelNote = _this.form.note
+          data.citycode = _this.form.citycode
           saveTravel(data).then(res => {
             console.log(res)
             if (res.code === 200) {
@@ -139,6 +136,7 @@ export default {
                 position: _this.contextMenuPositon // 基点位置
               })
               _this.dialogVisible = false
+              _this.$emit('updateData')
             }
           })
         } else {
@@ -228,7 +226,7 @@ export default {
           if (status === 'complete' && data.info === 'OK') {
             // result为对应的地理位置详细信息
             console.log(data)
-            // _this.form.address = data.regeocode.formattedAddress
+            _this.form.citycode = data.regeocode.addressComponent.citycode
           }
         })
       })

@@ -36,6 +36,11 @@ const routes = [
         component: () => import(/* webpackChunkName: 'user' */ '@/views/travels/Index.vue'),
         meta: { title: '游记', keepAlive: true, requireAuth: true }
       }, {
+        path: 'travels/detail',
+        name: 'travelsDetail',
+        component: () => import(/* webpackChunkName: 'user' */ '@/views/travels/travelUpdate.vue'),
+        meta: { title: '游记详情', keepAlive: true, requireAuth: true }
+      }, {
         path: '/map',
         name: 'Map',
         component: () => import(/* webpackChunkName: 'user' */ '@/views/travels/map.vue'),
