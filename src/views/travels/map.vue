@@ -45,7 +45,8 @@ export default {
       form: {
         name: '',
         note: '',
-        citycode: ''
+        cityCode: '',
+        provinceCode : ''
       },
       rules: {
         name: [
@@ -127,7 +128,9 @@ export default {
           data.latitude = _this.lnglat[1]
           data.travelTitle = _this.form.name
           data.travelNote = _this.form.note
-          data.citycode = _this.form.citycode
+          data.cityCode = _this.form.cityCode
+          data.provinceCode = _this.form.provinceCode
+          console.log(data)
           saveTravel(data).then(res => {
             console.log(res)
             if (res.code === 200) {
@@ -226,7 +229,7 @@ export default {
           if (status === 'complete' && data.info === 'OK') {
             // result为对应的地理位置详细信息
             console.log(data)
-            _this.form.citycode = data.regeocode.addressComponent.citycode
+            _this.form.cityCode = data.regeocode.addressComponent.adcode // 城市code
           }
         })
       })
