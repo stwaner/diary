@@ -12,6 +12,9 @@
           <el-form-item label="游记心得" prop="travelNote">
             <el-input v-model="ruleForm.travelNote" :value="travelObj.travelNote"></el-input>
           </el-form-item>
+          <el-form-item label="游记地址">
+            <city-Select @hasChange="handleChange" :addressCode="ruleForm.addressCode"></city-Select>
+          </el-form-item>
           <el-form-item label="游记标签">
             <el-tag
               :key="tag"
@@ -50,9 +53,10 @@
 </template>
 
 <script>
-import { traveDetail } from '@/api/travel.js'
+import { traveDetail, saveTravel } from '@/api/travel.js'
 import { getQueryString } from '@/utils/getUrlValue'
 import { SelfLocation } from '../amap/location'
+import citySelect from '@/components/CitySelect.vue'
 
 export default {
   data () {
@@ -66,7 +70,8 @@ export default {
       center: [],
       ruleForm: {
         travelTitle: '',
-        travelNote: ''
+        travelNote: '',
+        addressCode: []
       },
       rules: {
         travelTitle: [
@@ -87,15 +92,14 @@ export default {
   created () {
     this.getTravelDetail(this.init)
   },
-  mounted () {
-  },
+  components: { citySelect },
   methods: {
     init () {
       const _this = this
       this.map = new AMap.Map('travle-map', {
         resizeEnable: true,
         center: _this.center,
-        zoom: 13
+        zoom: 15
       })
       // 地图加载完后
       this.map.on('complete', function () {
@@ -115,13 +119,18 @@ export default {
       const lnglat = e.lnglat
       this.center = [ lnglat.lng, lnglat.lat]
     },
+    handleChange (value) {
+      this.travelObj.provinceCode = value[0]
+      this.travelObj.cityCode = value[1]
+    },
     async getTravelDetail (callback) {
       const res = await traveDetail({ travelId: this.travelId, userId: this.$store.state.login.userInfo.userId || this.userId })
       if (res.code === 200) {
         this.travelObj = res.data
+        this.ruleForm.addressCode = [res.data.provinceCode, res.data.cityCode]
         this.center = [res.data.longitude, res.data.latitude]
         this.initData()
-        if (callback) callback()
+        callback && callback()
       }
     },
     initData () {
@@ -178,6 +187,8 @@ export default {
           data.tag = this.dynamicTags.join(',')
           data.longitude = this.center[0]
           data.latitude = this.center[1]
+          data.cityCode = this.travelObj.cityCode
+          data.provinceCode = this.travelObj.provinceCode
           if (this.travelId) {
             data.travelId = this.travelId
             msg = '修改成功'
@@ -185,13 +196,13 @@ export default {
             msg = '添加成功'
           }
           console.log(data)
-          // const res = await saveLearn(data)
-          // if (res.code === 200) {
-          //   this.$message.success(msg)
-          //   this.$router.go(-1)
-          // } else {
-          //   this.$message.error(res.msg)
-          // }
+          const res = await saveTravel(data)
+          if (res.code === 200) {
+            this.$message.success(msg)
+            this.$router.go(-1)
+          } else {
+            this.$message.error(res.msg)
+          }
         } else {
           return false
         }

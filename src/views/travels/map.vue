@@ -3,26 +3,7 @@
     <div class="amap-page-container">
       <div id="container" class="amap-container"></div>
     </div>
-    <el-dialog
-      custom-class="amap-dialog"
-      :title="null"
-      :close-on-click-modal="false"
-      :visible.sync="dialogVisible"
-      width="40%"
-      :before-close="() => { dialogVisible=false }">
-      <el-form :model="form" ref="ruleForm" :rules="rules">
-        <el-form-item label="游记标题" :label-width="formLabelWidth" prop="name">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="游记心得" :label-width="formLabelWidth" prop="note">
-          <el-input v-model="form.note" autocomplete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
-      </span>
-    </el-dialog>
+    <travel-modal :dialogVisible.sync="dialogVisible" @handleSubmitForm="submitForm"></travel-modal>
   </div>
 </template>
 
@@ -30,6 +11,8 @@
 import AMap from 'AMap' // 引入高德地图
 import { SelfLocation } from '../amap/location'
 import { saveTravel } from '../../api/travel'
+import { getProvinceList, getCityList } from '@/api/public'
+import travelModal from './components/travelModal.vue'
 
 export default {
   name: 'amap',
@@ -42,22 +25,8 @@ export default {
       lnglat: [0, 0],
       geocoder: null,
       dialogVisible: false,
-      form: {
-        name: '',
-        note: '',
-        cityCode: '',
-        provinceCode : ''
-      },
-      rules: {
-        name: [
-          { required: true, message: '请输入游记主题', trigger: 'blur' },
-          { min: 2, max: 8, message: '长度在 2 到 8 个字符', trigger: 'blur' }
-        ],
-        note: [
-          { required: true, message: '请输入游记心得', trigger: 'blur' }
-        ]
-      },
-      formLabelWidth: '90px'
+      cityCode: null,
+      provinceCode: null
     }
   },
   computed: {
@@ -65,6 +34,7 @@ export default {
       return (JSON.parse(window.localStorage.getItem('userInfo'))).userId
     }
   },
+  components: { travelModal },
   props: {
     markers: Array
   },
@@ -118,33 +88,24 @@ export default {
         _this.map.setZoomAndCenter(4, [108.946609, 34.262324])
       }, 3)
     },
-    submitForm(formName) {
-      const _this = this
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          const data = {}
-          data.userId = _this.$store.state.login.userInfo.userId || _this.userId
-          data.longitude = _this.lnglat[0]
-          data.latitude = _this.lnglat[1]
-          data.travelTitle = _this.form.name
-          data.travelNote = _this.form.note
-          data.cityCode = _this.form.cityCode
-          data.provinceCode = _this.form.provinceCode
-          console.log(data)
-          saveTravel(data).then(res => {
-            console.log(res)
-            if (res.code === 200) {
-              var marker = new AMap.Marker({
-                map: _this.map,
-                position: _this.contextMenuPositon // 基点位置
-              })
-              _this.dialogVisible = false
-              _this.$emit('updateData')
-            }
+    submitForm(formdata) {
+      const data = {}
+      data.userId = this.$store.state.login.userInfo.userId || this.userId
+      data.longitude = this.lnglat[0]
+      data.latitude = this.lnglat[1]
+      data.travelTitle = formdata.name
+      data.travelNote = formdata.note
+      data.provinceCode = formdata.addressCode[0] ? formdata.addressCode[0] : this.provinceCode
+      data.cityCode = formdata.addressCode[1] ? formdata.addressCode[1] : this.cityCode
+      saveTravel(data).then(res => {
+        console.log(res)
+        if (res.code === 200) {
+          var marker = new AMap.Marker({
+            map: this.map,
+            position: this.contextMenuPositon // 基点位置
           })
-        } else {
-          console.log('error submit!!')
-          return false
+          this.dialogVisible = false
+          this.$emit('updateData')
         }
       })
     },
@@ -229,9 +190,30 @@ export default {
           if (status === 'complete' && data.info === 'OK') {
             // result为对应的地理位置详细信息
             console.log(data)
-            _this.form.cityCode = data.regeocode.addressComponent.adcode // 城市code
+            _this.cityCode = data.regeocode.addressComponent.adcode // 城市code
+            _this.getProvinceCode(_this.cityCode)
           }
         })
+      })
+    },
+    // 通过 cityCode 获取 provinceCode
+    async getProvinceCode (cityCode) {
+      const _this = this
+      const cityList = JSON.parse(localStorage.getItem('cityList'))
+      cityList.some((item, i) => {
+        if (cityCode) {
+          if (cityCode === item.cityCode) {
+            _this.provinceCode = item.provinceCode
+            return true
+          }
+          if (i!==0) {
+            if (Math.abs(cityCode - item.cityCode) >= Math.abs(cityCode - cityList[i-1].cityCode)) {
+              _this.provinceCode = cityList[i-1].provinceCode
+              return true
+            }
+          }
+          return null
+        }
       })
     }
   }
