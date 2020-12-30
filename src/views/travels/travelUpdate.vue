@@ -127,7 +127,6 @@ export default {
       const res = await traveDetail({ travelId: this.travelId, userId: this.$store.state.login.userInfo.userId || this.userId })
       if (res.code === 200) {
         this.travelObj = res.data
-        this.ruleForm.addressCode = [res.data.provinceCode, res.data.cityCode]
         this.center = [res.data.longitude, res.data.latitude]
         this.initData()
         callback && callback()
@@ -136,6 +135,7 @@ export default {
     initData () {
       this.ruleForm.travelTitle = this.travelObj.travelTitle
       this.ruleForm.travelNote = this.travelObj.travelNote
+      this.ruleForm.addressCode = [this.travelObj.provinceCode, this.travelObj.cityCode]
       for (const key in this.travelObj.label) {
         this.dynamicTags.push(this.travelObj.label[key].labelContext)
       }

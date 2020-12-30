@@ -17,7 +17,7 @@
             <div class="travels-info">
               <img class="travel-img" :src="item.avatar ? item.avatar : '../../assets/images/portfolio/into-the-light.jpg'" alt="">
               <div class="city">
-                <p class="title"><i class="el-icon-price-tag"></i> {{ item.provinceName }}{{ item.cityName }}</p>
+                <p class="title"><i class="el-icon-price-tag"></i>{{ item.provinceName }}{{ item.cityName }}</p>
                 <p class="eng">{{ item.travelTitle }}</p>
               </div>
             </div>

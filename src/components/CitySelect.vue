@@ -10,14 +10,13 @@
 </template>
 
 <script>
-import { getProvinceList, getCityList } from '@/api/public'
 import { listConvertTree } from '@/utils/formatter'
 
 export default {
   data () {
     return {
-      provinceList: [],
-      cityList: [],
+      provinceList: JSON.parse(localStorage.getItem('provinceList')) || [],
+      cityList: JSON.parse(localStorage.getItem('cityList')) || [],
       option: null,
       getDone: false,
       defaultValue: []
@@ -28,8 +27,9 @@ export default {
       this.defaultValue = this.addressCode ? this.addressCode : []
     }
   },
-  created () {
-    this.getProvince(this.getCity)
+  mounted () {
+    this.option = listConvertTree(this.provinceList, this.cityList)
+    // console.log(this.option)
   },
   props: {
     addressCode: {
@@ -39,20 +39,6 @@ export default {
   methods: {
     handleChange(value) {
       this.$emit('hasChange', value)
-    },
-    async getProvince (callback) {
-      const res = await getProvinceList()
-      this.provinceList = res.data
-      callback && callback() // 获取省后再获取城市
-    },
-    async getCity () {
-      const res = await getCityList()
-      this.cityList = res.data
-      this.getDone = true
-      if (this.getDone) {
-        this.option = listConvertTree(this.provinceList, this.cityList)
-        console.log(this.option)
-      }
     }
   }
 }

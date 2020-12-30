@@ -1,5 +1,7 @@
 <template>
   <div>
+    {{cityCode}}
+    {{provinceCode}}
     <div class="amap-page-container">
       <div id="container" class="amap-container"></div>
     </div>
@@ -97,8 +99,8 @@ export default {
       data.travelNote = formdata.note
       data.provinceCode = formdata.addressCode[0] ? formdata.addressCode[0] : this.provinceCode
       data.cityCode = formdata.addressCode[1] ? formdata.addressCode[1] : this.cityCode
+      console.log(data)
       saveTravel(data).then(res => {
-        console.log(res)
         if (res.code === 200) {
           var marker = new AMap.Marker({
             map: this.map,
@@ -190,7 +192,7 @@ export default {
           if (status === 'complete' && data.info === 'OK') {
             // result为对应的地理位置详细信息
             console.log(data)
-            _this.cityCode = data.regeocode.addressComponent.adcode // 城市code
+            _this.cityCode = data.regeocode.addressComponent.adcode // 区code
             _this.getProvinceCode(_this.cityCode)
           }
         })
@@ -198,9 +200,11 @@ export default {
     },
     // 通过 cityCode 获取 provinceCode
     async getProvinceCode (cityCode) {
+      console.log(cityCode)
       const _this = this
       const cityList = JSON.parse(localStorage.getItem('cityList'))
       cityList.some((item, i) => {
+        // console.log(item)
         if (cityCode) {
           if (cityCode === item.cityCode) {
             _this.provinceCode = item.provinceCode
@@ -208,6 +212,11 @@ export default {
           }
           if (i!==0) {
             if (Math.abs(cityCode - item.cityCode) >= Math.abs(cityCode - cityList[i-1].cityCode)) {
+              const maincity = ['11', '12', '31', '50']
+              if (maincity.indexOf(cityCode.substring(0, 2)) === -1) { // 如果没有直辖市
+                cityCode = cityList[i-1].cityCode.substring(0, 4)
+                _this.cityCode = cityList[i-1].cityCode
+              }
               _this.provinceCode = cityList[i-1].provinceCode
               return true
             }
@@ -215,6 +224,7 @@ export default {
           return null
         }
       })
+      console.log(_this.cityCode, _this.provinceCode)
     }
   }
 }
