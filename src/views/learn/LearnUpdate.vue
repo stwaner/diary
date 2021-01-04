@@ -139,7 +139,7 @@ export default {
             this.$message.success(msg)
             this.$router.go(-1)
           } else {
-            this.$message.error(res.msgg)
+            this.$message.error(res.msg)
           }
         } else {
           return false

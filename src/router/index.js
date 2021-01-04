@@ -4,11 +4,11 @@ import routes from '../router/router'
 import store from '../store/index'
 Vue.use(Router)
 
-const originalPush = Router.prototype.push
-Router.prototype.push = function push(location) {
-  console.log(location, '------------location')
-  return originalPush.call(this, location).catch(err => console.log(err))
-}
+// const originalPush = Router.prototype.push
+// Router.prototype.push = function push(location) {
+//   console.log(location, '------------location')
+//   return originalPush.call(this, location).catch(err => console.log(err))
+// }
 
 const router = new Router({
   // mode: 'history',
@@ -30,13 +30,12 @@ const loginPath = '/user/login'
 
 // 全局路由守卫
 router.beforeEach((to, from, next) => {
-	if (to.meta.title) {
+  if (to.meta.title) {
     document.title = to.meta.title
   }
   const token = store.state.token ? store.state.token : localStorage.getItem('token')
-  // console.log(token, typeof(token), token == 'undefined', token == 'null', token == 'undefined' || token == 'null' || token == null)
-  if (token == 'undefined' || token == 'null' || token == null) {
-    if (to.path == loginPath) {
+  if (token === 'undefined' || token === 'null' || token == null) {
+    if (to.path === loginPath || to.path === '/user/register') {
       next()
     } else {
       next({ path: '/user/login', query: { redirect: to.fullPath } })
@@ -55,7 +54,6 @@ router.beforeEach((to, from, next) => {
     } else {
       next()
     }
-    
   }
   next()
 })

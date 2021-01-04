@@ -24,24 +24,30 @@
 
 <script>
 import { register, getCode } from '@/api/login'
-import customValid from '@/utils/customValidate'
-// import { checkEmail } from '@/utils/rules'
 export default {
   name: 'Register',
   data () {
+    const reg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
+    var validateEmail = (reule, value, callback) => {
+      if (!reg.test(this.ruleForm.email)) {
+        callback(new Error('请输入正确的邮箱格式'))
+      } else {
+        callback()
+      }
+    }
     return {
       disabled: false,
       timmer: null,
       sendText: '获取验证码',
       ruleForm: {
-        email: '2219431784@qq.com',
+        email: '',
         code: '',
-        password: '123456'
+        password: ''
       },
       rules: {
         email: [
           { required: true, message: '请输入邮箱', trigger: 'blur' },
-          { validator: ruleForm.email, trigger: 'blur' }
+          { validator: validateEmail, trigger: 'blur' }
         ],
         code: [
           { required: true, message: '请输入验证码', trigger: 'blur' }
@@ -82,14 +88,13 @@ export default {
     },
     submitForm () {
       const _this = this
-      this.$refs.regForm.validate( async (valid) => {
+      this.$refs.regForm.validate(async (valid) => {
         if (valid) {
           const res = await register({ email: this.ruleForm.email, pwd: this.ruleForm.password, code: this.ruleForm.code })
           if (res.code === 200) {
             _this.$message.success('注册成功')
             _this.$router.push({ path: '/login' })
           } else {
-            console.log(res.msg)
             _this.$message.error(res.msg)
           }
         } else {
@@ -97,7 +102,7 @@ export default {
         }
       })
     },
-    beforeDestroy() {
+    beforeDestroy () {
       clearTimeout(this.timmer)
       this.timmer = null
     }

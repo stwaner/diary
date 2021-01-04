@@ -13,8 +13,15 @@ import store from './store'
 // import element from './element/index'
 // Vue.use(element)
 
+// 引入公共js
+import common from './utils/common.js'
+Vue.prototype.common = common
+
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios
+
+common.getProvinceCode()
+common.getCityCode()
 
 // console.log(process.env.VUE_APP_BASE_URL)
 Vue.use(VueRouter)
