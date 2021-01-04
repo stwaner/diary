@@ -6,6 +6,17 @@
     <div class="text item">
       <div class="Learn-update-wrapper">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="游记主图" prop="travelImg">
+            <el-upload
+              class="avatar-uploader"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload">
+              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
           <el-form-item label="游记主题" prop="travelTitle">
             <el-input v-model="ruleForm.travelTitle" :value="travelObj.travelTitle"></el-input>
           </el-form-item>
@@ -36,6 +47,9 @@
             </el-input>
             <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 添加</el-button>
           </el-form-item>
+          <el-form-item label="游记内容" prop="travelHtml">
+            <editor @input="inputChange" :value="ruleForm.travelHtml"></editor>
+          </el-form-item>
           <el-form-item label="游记地址" prop="address">
             <div class="map-wrap">
               <div id="travle-map"></div>
@@ -56,6 +70,7 @@
 import { traveDetail, saveTravel } from '@/api/travel.js'
 import { getQueryString } from '@/utils/getUrlValue'
 import { SelfLocation } from '../amap/location'
+import Editor from '../../components/in_editor/index.vue'
 import citySelect from '@/components/CitySelect.vue'
 
 export default {
@@ -64,22 +79,29 @@ export default {
       map: null,
       travelId: getQueryString('travelId'),
       travelObj: {},
+      imageUrl: '',
       dynamicTags: [],
       inputVisible: false,
       inputValue: '',
       center: [],
       ruleForm: {
+        travelImg: '',
         travelTitle: '',
         travelNote: '',
+        travelHtml: '',
         addressCode: []
       },
       rules: {
+        travelImg: [{ required: true, message: '请输入游记主图', trigger: 'blur' }],
         travelTitle: [
           { required: true, message: '请输入游记主题', trigger: 'blur' },
           { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
         ],
         travelNote: [
           { required: true, message: '请填写游记心得', trigger: 'blur' }
+        ],
+        travelHtml: [
+          { required: true, message: '请填写学习内容', trigger: 'blur' }
         ]
       }
     }
@@ -92,7 +114,7 @@ export default {
   created () {
     this.getTravelDetail(this.init)
   },
-  components: { citySelect },
+  components: { citySelect, Editor },
   methods: {
     init () {
       const _this = this
@@ -115,6 +137,20 @@ export default {
         marker.on('dragend', _this.markerDraged)
       })
     },
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw)
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
     markerDraged (e) {
       const lnglat = e.lnglat
       this.center = [ lnglat.lng, lnglat.lat]
@@ -122,6 +158,9 @@ export default {
     handleChange (value) {
       this.travelObj.provinceCode = value[0]
       this.travelObj.cityCode = value[1]
+    },
+    inputChange (val) {
+      this.ruleForm.travelHtml = val
     },
     async getTravelDetail (callback) {
       const res = await traveDetail({ travelId: this.travelId, userId: this.$store.state.login.userInfo.userId || this.userId })
@@ -133,8 +172,10 @@ export default {
       }
     },
     initData () {
+      this.ruleForm.travelImg = this.travelObj.travelImg
       this.ruleForm.travelTitle = this.travelObj.travelTitle
       this.ruleForm.travelNote = this.travelObj.travelNote
+      this.ruleForm.travelHtml = this.travelObj.travelHtml
       this.ruleForm.addressCode = [this.travelObj.provinceCode, this.travelObj.cityCode]
       for (const key in this.travelObj.label) {
         this.dynamicTags.push(this.travelObj.label[key].labelContext)
@@ -178,17 +219,19 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate(async (valid, values) => {
         if (valid) {
-          this.$message.success('查看控制台打印信息')
           const data = {}
           let msg = ''
           data.userId = this.$store.state.login.userInfo.userId || this.userId
-          data.travelTitle = this.travelObj.travelTitle
-          data.travelNote = this.travelObj.travelNote
+          data.travelImg = this.ruleForm.travelImg
+          data.travelTitle = this.ruleForm.travelTitle
+          data.travelNote = this.ruleForm.travelNote
+          data.travelHtml = this.ruleForm.travelHtml
           data.tag = this.dynamicTags.join(',')
           data.longitude = this.center[0]
           data.latitude = this.center[1]
           data.cityCode = this.travelObj.cityCode
           data.provinceCode = this.travelObj.provinceCode
+          console.log(data)
           if (this.travelId) {
             data.travelId = this.travelId
             msg = '修改成功'
