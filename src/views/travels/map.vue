@@ -1,7 +1,5 @@
 <template>
   <div>
-    {{cityCode}}
-    {{provinceCode}}
     <div class="amap-page-container">
       <div id="container" class="amap-container"></div>
     </div>

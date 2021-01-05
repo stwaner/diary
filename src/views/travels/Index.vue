@@ -52,7 +52,7 @@ export default {
       this.$router.push({ path: '/travels/detail', query: { travelId: id } })
     },
     handleAddCities () {
-      this.$message.info('添加城市')
+      this.$router.push({ path: '/travels/detail' })
     },
     // 获取游记标记
     async getTravel () {
