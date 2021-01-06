@@ -2,7 +2,7 @@
   <div>
     <div class="home">
       <calendar/>
-      <section id="info">
+      <!-- <section id="info">
         <div class="row">
           <div class="bgrid-quarters s-bgrid-halves">
             <div class="columns">
@@ -31,9 +31,9 @@
             </div>
             </div>
         </div>
-      </section>
+      </section> -->
       <!-- 我的日记 -->
-      <div class="journal">
+      <!-- <div class="journal">
         <div class="row">
           <div class="twelve columns align-center">
             <h1 class="parg-title">我的日记</h1>
@@ -45,7 +45,7 @@
           </p>
         </div>
         <journal-part></journal-part>
-      </div>
+      </div> -->
       <!-- 学习天地 -->
       <div class="journal">
         <div class="row">

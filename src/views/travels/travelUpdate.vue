@@ -119,7 +119,9 @@ export default {
       this.getTravelDetail(this.init)
     } else {
       this.center = [116.38725, 39.84999]
-      this.init()
+      setTimeout(() => {
+        this.init()
+      }, 100);
     }
   },
   components: { citySelect, Editor },
@@ -142,6 +144,7 @@ export default {
         })
         // 将创建的点标记添加到已有的地图实例：
         _this.map.add(marker)
+        console.log(_this.map,'-----------------------')
         marker.on('dragend', _this.markerDraged)
       })
     },

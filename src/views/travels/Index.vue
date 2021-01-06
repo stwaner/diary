@@ -2,31 +2,33 @@
   <div class="travels-wrapper">
     <h2 class="travels-title">我的旅行游记</h2>
     <a-map :markers="markers" @updateData="getTravel" />
-    <div class="btn-wrap">
-      <el-button class="add-btn" icon="el-icon-plus" @click="handleAddCities">添加城市</el-button>
-    </div>
-    <div class="block">
-      <el-timeline>
-        <el-timeline-item
-          v-for="(item, index) in activities"
-          :key="index"
-          :timestamp="item.created"
-          placement="top"
-        >
-          <el-card>
-            <div class="travels-info">
-              <img class="travel-img" :src="item.fileUrl ? item.fileUrl : '../../assets/images/portfolio/into-the-light.jpg'" alt="">
-              <div class="city">
-                <p class="title"><i class="el-icon-price-tag"></i>{{ item.provinceName }}{{ item.cityName }}</p>
-                <p class="eng">{{ item.travelTitle }}</p>
+    <div class="travel-list-wrap">
+      <div class="btn-wrap">
+        <el-button class="add-btn" style="width:100%" icon="el-icon-plus" @click="handleAddCities">添加城市</el-button>
+      </div>
+      <div class="block">
+        <el-timeline>
+          <el-timeline-item
+            v-for="(item, index) in activities"
+            :key="index"
+            :timestamp="item.created"
+            placement="top"
+          >
+            <el-card>
+              <div class="travels-info">
+                <img class="travel-img" :src="item.fileUrl ? item.fileUrl : defaultFileUrl" alt="">
+                <div class="city">
+                  <p class="title"><i class="el-icon-price-tag"></i>{{ item.provinceName }}{{ item.cityName }}</p>
+                  <p class="eng">{{ item.travelTitle }}</p>
+                </div>
               </div>
-            </div>
-            <div class="manage">
-              <i class="el-icon-setting" @click="handleDetail(item.travelId)"></i>
-            </div>
-          </el-card>
-        </el-timeline-item>
-      </el-timeline>
+              <div class="manage">
+                <i class="el-icon-setting" @click="handleDetail(item.travelId)"></i>
+              </div>
+            </el-card>
+          </el-timeline-item>
+        </el-timeline>
+      </div>
     </div>
   </div>
 </template>
@@ -39,7 +41,8 @@ export default {
   data () {
     return {
       markers: [],
-      activities: []
+      activities: [],
+      defaultFileUrl: require('../../assets/images/post-image/post-image.jpg')
     }
   },
   components: { AMap },
@@ -68,19 +71,24 @@ export default {
 
 <style lang="scss">
 .travels-wrapper{
-  width: 1200px;
-  margin: 40px auto;
+  margin-right: 24px;
   .travels-title{
     font-size: 28px;
     color: #A1A8AF;
     font-weight: normal;
     text-align: center;
+    margin-top: 24px;
+  }
+  .travel-list-wrap{
+    margin-left: 1000px;
   }
   .btn-wrap{
     margin: 20px 0;
     text-align: right;
   }
   .el-timeline{
+    height: 450px;
+    overflow: auto;
     .el-card__body{
       display: flex;
       justify-content: space-between;
@@ -111,7 +119,7 @@ export default {
         flex: 1;
         border-left: 1px solid #ededed;
         i{
-          font-size: 38px;
+          font-size: 28px;
           color: #8a8686;
           cursor: pointer;
           transition: all .2s ease-in-out;
@@ -121,6 +129,9 @@ export default {
           }
         }
       }
+    }
+    .el-timeline-item__wrapper{
+      padding-right: 20px;
     }
   }
 }

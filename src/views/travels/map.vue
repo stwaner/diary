@@ -230,9 +230,12 @@ export default {
 
 <style lang="scss">
 .amap-page-container {
+  position: absolute;
+  top: 180px;
+  left: 20px;
   .amap-container{
-    width: 1000px;
-    height: 600px;
+    width: 950px;
+    height: 450px;
     margin: 0 auto;
   }
   .amap-marker-label{
