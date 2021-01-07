@@ -99,5 +99,9 @@ export default {
       float: left;
     }
   }
+  .el-pagination{
+    text-align: center;
+    padding: 25px 0;
+  }
 }
 </style>
