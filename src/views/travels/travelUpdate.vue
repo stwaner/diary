@@ -9,19 +9,21 @@
           <el-form-item label="游记主图" prop="travelImg">
             <el-upload
               class="avatar-uploader"
-              action="https://jsonplaceholder.typicode.com/posts/"
+              :action="baseUrl + 'api/file/image'"
+              :data={userId:this.userId}
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
+              :on-error="handleAvatarError"
               :before-upload="beforeAvatarUpload">
-              <img v-if="imageUrl" :src="imageUrl" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <img class="travelPicture" v-if="ruleForm.travelImg" :src="ruleForm.travelImg">
+              <el-button v-else type="primary">上传<i class="el-icon-upload el-icon--right"></i></el-button>
             </el-upload>
           </el-form-item>
           <el-form-item label="游记主题" prop="travelTitle">
-            <el-input v-model="ruleForm.travelTitle" :value="travelObj.travelTitle"></el-input>
+            <el-input v-model="ruleForm.travelTitle" :value="travelObj.travelTitle" placeholder="请输入游记主题"></el-input>
           </el-form-item>
           <el-form-item label="游记心得" prop="travelNote">
-            <el-input v-model="ruleForm.travelNote" :value="travelObj.travelNote"></el-input>
+            <el-input v-model="ruleForm.travelNote" :value="travelObj.travelNote" placeholder="请输入游记心得"></el-input>
           </el-form-item>
           <el-form-item label="游记地址">
             <city-Select @hasChange="handleChange" :addressCode="ruleForm.addressCode"></city-Select>
@@ -68,7 +70,6 @@
 
 <script>
 import { traveDetail, saveTravel } from '@/api/travel.js'
-import { getQueryString } from '@/utils/getUrlValue'
 import { SelfLocation } from '../amap/location'
 import Editor from '../../components/in_editor/index.vue'
 import citySelect from '@/components/CitySelect.vue'
@@ -76,10 +77,12 @@ import citySelect from '@/components/CitySelect.vue'
 export default {
   data () {
     return {
+      // baseUrl: process.env.VUE_APP_BASE_URL,
+      baseUrl: 'http://localhost:8888/',
+      fileId: '',
       map: null,
-      travelId: getQueryString('travelId'),
+      travelId: this.$route.query.travelId,
       travelObj: {},
-      imageUrl: '',
       dynamicTags: [],
       inputVisible: false,
       inputValue: '',
@@ -112,7 +115,14 @@ export default {
     }
   },
   created () {
-    this.getTravelDetail(this.init)
+    if (this.travelId) {
+      this.getTravelDetail(this.init)
+    } else {
+      this.center = [116.38725, 39.84999]
+      setTimeout(() => {
+        this.init()
+      }, 100);
+    }
   },
   components: { citySelect, Editor },
   methods: {
@@ -134,22 +144,28 @@ export default {
         })
         // 将创建的点标记添加到已有的地图实例：
         _this.map.add(marker)
+        console.log(_this.map,'-----------------------')
         marker.on('dragend', _this.markerDraged)
       })
     },
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      console.log(res)
+      this.ruleForm.travelImg = URL.createObjectURL(file.raw)
+      this.fileId = res.fileId
+    },
+    handleAvatarError (err, file, fileList) {
+      this.$message.error(err)
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isLt10M = file.size / 1024 / 1024 < 10
       if (!isJPG) {
         this.$message.error('上传头像图片只能是 JPG 格式!')
       }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
+      if (!isLt10M) {
+        this.$message.error('上传头像图片大小不能超过 10MB!')
       }
-      return isJPG && isLt2M
+      return isJPG && isLt10M
     },
     markerDraged (e) {
       const lnglat = e.lnglat
@@ -172,7 +188,7 @@ export default {
       }
     },
     initData () {
-      this.ruleForm.travelImg = this.travelObj.travelImg
+      this.ruleForm.travelImg = this.travelObj.fileUrl
       this.ruleForm.travelTitle = this.travelObj.travelTitle
       this.ruleForm.travelNote = this.travelObj.travelNote
       this.ruleForm.travelHtml = this.travelObj.travelHtml
@@ -222,7 +238,7 @@ export default {
           const data = {}
           let msg = ''
           data.userId = this.$store.state.login.userInfo.userId || this.userId
-          data.travelImg = this.ruleForm.travelImg
+          data.travelImg = this.fileId
           data.travelTitle = this.ruleForm.travelTitle
           data.travelNote = this.ruleForm.travelNote
           data.travelHtml = this.ruleForm.travelHtml
@@ -231,14 +247,12 @@ export default {
           data.latitude = this.center[1]
           data.cityCode = this.travelObj.cityCode
           data.provinceCode = this.travelObj.provinceCode
-          console.log(data)
           if (this.travelId) {
             data.travelId = this.travelId
             msg = '修改成功'
           } else {
             msg = '添加成功'
           }
-          console.log(data)
           const res = await saveTravel(data)
           if (res.code === 200) {
             this.$message.success(msg)
@@ -262,6 +276,9 @@ export default {
 .map-wrap{
   padding: 10px;
   border: 1px solid #DCDFE6;
+}
+.travelPicture{
+  max-width: 240px;
 }
 #travle-map{
   width: 100%;

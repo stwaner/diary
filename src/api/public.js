@@ -2,7 +2,8 @@ import { request } from '@/utils/request'
 
 const common = {
   provinceList: '/api/select/province', // 获取省份
-  cityList: '/api/select/city' // 获取城市
+  cityList: '/api/select/city', // 获取城市
+  upload: '/api/file/image' // 文件上传统一接口
 }
 
 export function getProvinceList (params) {
@@ -20,6 +21,16 @@ export function getCityList (params) {
     xhrFields: { withCredentials: true },
     crossDomain: true,
     url: common.cityList,
+    method: 'get',
+    params: params
+  })
+}
+
+export function upload (params) {
+  return request({
+    xhrFields: { withCredentials: true },
+    crossDomain: true,
+    url: common.upload,
     method: 'get',
     params: params
   })

@@ -54,14 +54,14 @@ export default {
 
 <style lang="scss">
 .diary-wrap{
-  margin-top: 24px;
+  margin-top: 24px!important;
   .diary-item{
     position: relative;
     margin-bottom: 20px;
     padding: 24px;
     background: #fff;
     &:last-child{
-     margin-bottom: 34px;
+     margin-bottom: 0;
     }
     .title{
       font-weight: 500;
