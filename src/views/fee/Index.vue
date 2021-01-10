@@ -120,7 +120,6 @@ export default {
     },
     handleSearch() {
       this.init()
-      console.log('搜索')
     },
     handleFeeOk () {
       this.feeVisible = false
