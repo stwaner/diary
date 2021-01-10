@@ -33,6 +33,7 @@
     "axios": "^0.20.0",
     "babel-loader": "^8.1.0",
     "core-js": "^3.6.5",
+    "echarts": "^5.0.0",
     "element-ui": "^2.13.2",
     "postcss-loader": "^3.0.0",
     "raw-loader": "^0.5.1",

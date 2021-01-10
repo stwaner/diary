@@ -95,7 +95,6 @@ export default {
     }
     .add-btn{
       width: 70%;
-      margin-right: 30px;
       float: left;
     }
   }
