@@ -51,10 +51,9 @@ export default {
       nav: [
         { title: '首页', path: '/home' },
         { title: '日记', path: '/journal', subNav: [{ title: '新建日记', path: '/journal/update' }] },
-        { title: '学习', path: '/learn', subNav: [{ title: '新建学习计划', path: '/learn/update' }] },
+        { title: '学习', path: '/learn', subNav: [{ title: '新建学习计划', path: 'learn/update' }] },
         { title: '游记', path: '/travels' },
-        { title: '记事本', path: '/note' },
-        { title: '生活费', path: '/fee' }
+        { title: '消费', path: '/fee', subNav: [{ title: '消费统计', path: 'fee/static' }] }
       ],
       navIndex: 0
     }

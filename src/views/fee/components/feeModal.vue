@@ -122,7 +122,7 @@ export default {
           data.costMoney = this.form.costMoney
           data.tag = this.dynamicTags.join(',')
           let msg = ''
-          if (this.costObj.costId) {
+          if (this.costObj) {
             data.costId = this.costObj.costId
             msg = '修改成功'
           } else {

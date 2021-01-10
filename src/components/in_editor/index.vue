@@ -52,7 +52,6 @@ export default {
     }
   },
   created () {
-    console.log(this.value)
     // 编辑器组件创建时将外部传入的值直接赋予编辑器
     this.editorData = this.value
   },

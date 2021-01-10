@@ -4,12 +4,6 @@ import routes from '../router/router'
 import store from '../store/index'
 Vue.use(Router)
 
-// const originalPush = Router.prototype.push
-// Router.prototype.push = function push(location) {
-//   console.log(location, '------------location')
-//   return originalPush.call(this, location).catch(err => console.log(err))
-// }
-
 const router = new Router({
   // mode: 'history',
   mode: 'hash',
@@ -25,6 +19,11 @@ const router = new Router({
     }
   }
 })
+
+const VueRouterPush = Router.prototype.push
+Router.prototype.push = function push (to) {
+  return VueRouterPush.call(this, to).catch(err => err)
+}
 
 const loginPath = '/user/login'
 

@@ -6,55 +6,55 @@ const routes = [
     redirect: '/home',
     children: [
       {
-        path: 'home',
+        path: '/home',
         name: 'Home',
         component: resolve => require(['@/views/Home.vue'], resolve),
         meta: { title: '首页', keepAlive: true, requireAuth: true }
       }, {
-        path: 'learn',
+        path: '/learn',
         name: 'Learn',
         component: resolve => require(['@/views/learn/Index.vue'], resolve),
         meta: { title: '学习天地', keepAlive: true, requireAuth: true }
       }, {
-        path: 'learn/update',
+        path: '/learn/update',
         name: 'LearnUpdate',
         component: () => import(/* webpackChunkName: 'user' */ '@/views/learn/LearnUpdate.vue'),
         meta: { title: '新建学习计划', keepAlive: true, requireAuth: true }
       }, {
-        path: 'journal',
+        path: '/journal',
         name: 'Journal',
         component: resolve => require(['@/views/journal/Index.vue'], resolve),
         meta: { title: '我的日记', keepAlive: true, requireAuth: true }
       }, {
-        path: 'journal/update',
+        path: '/journal/update',
         name: 'JournalUpdate',
-        component: () => import(/* webpackChunkName: 'user' */ '@/views/journal/JournalUpdate.vue'),
+        component: () => import('@/views/journal/JournalUpdate.vue'),
         meta: { title: '新建日记', keepAlive: true, requireAuth: true }
       }, {
-        path: 'travels',
+        path: '/travels',
         name: 'Travels',
-        component: () => import(/* webpackChunkName: 'user' */ '@/views/travels/Index.vue'),
+        component: () => import('@/views/travels/Index.vue'),
         meta: { title: '游记', keepAlive: true, requireAuth: true }
       }, {
-        path: 'travels/detail',
+        path: '/travels/detail',
         name: 'travelsDetail',
-        component: () => import(/* webpackChunkName: 'user' */ '@/views/travels/travelUpdate.vue'),
+        component: () => import('@/views/travels/travelUpdate.vue'),
         meta: { title: '游记详情', keepAlive: true, requireAuth: true }
       }, {
         path: '/map',
         name: 'Map',
-        component: () => import(/* webpackChunkName: 'user' */ '@/views/travels/map.vue'),
+        component: () => import('@/views/travels/map.vue'),
         meta: { title: '地图', keepAlive: true, requireAuth: true }
-      }, {
-        path: 'note',
-        name: 'Note',
-        component: () => import(/* webpackChunkName: 'user' */ '@/views/note/Index.vue'),
-        meta: { title: '记事本', keepAlive: true, requireAuth: true }
       }, {
         path: 'fee',
         name: 'Fee',
-        component: () => import(/* webpackChunkName: 'user' */ '@/views/fee/Index.vue'),
-        meta: { title: '生活费', keepAlive: true, requireAuth: true }
+        component: () => import('@/views/fee/Index.vue'),
+        meta: { title: '消费列表', keepAlive: true, requireAuth: true }
+      }, {
+        path: 'fee/static',
+        name: 'feeStatic',
+        component: () => import('@/views/fee/FeeStatic.vue'),
+        meta: { title: '消费统计', keepAlive: true, requireAuth: true }
       }
     ]
   }, {
