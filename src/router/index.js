@@ -5,8 +5,8 @@ import store from '../store/index'
 Vue.use(Router)
 
 const router = new Router({
-  // mode: 'history',
-  mode: 'hash',
+  mode: 'history',
+  // mode: 'hash',
   routes: routes,
   scrollBehavior (to, from, savedPosition) {
     if (savedPosition) {
@@ -20,10 +20,10 @@ const router = new Router({
   }
 })
 
-const VueRouterPush = Router.prototype.push
-Router.prototype.push = function push (to) {
-  return VueRouterPush.call(this, to).catch(err => err)
-}
+// const VueRouterPush = Router.prototype.push
+// Router.prototype.push = function push (to) {
+//   return VueRouterPush.call(this, to).catch(err => err)
+// }
 
 const loginPath = '/user/login'
 

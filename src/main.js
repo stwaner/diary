@@ -14,7 +14,7 @@ import store from './store'
 // import element from './element/index'
 // Vue.use(element)
 
-// 引入 ECharts 主模块
+// 按需引入 引入 ECharts 主模块
 var echarts = require('echarts/lib/echarts')
 Vue.prototype.$echarts = echarts
 // 引入柱状图

@@ -18,7 +18,8 @@ const routes = [
       }, {
         path: '/learn/update',
         name: 'LearnUpdate',
-        component: () => import(/* webpackChunkName: 'user' */ '@/views/learn/LearnUpdate.vue'),
+        component: resolve => require(['@/views/learn/LearnUpdate.vue'], resolve),
+        // component: () => import(/* webpackChunkName: 'user' */ '@/views/learn/LearnUpdate.vue'),
         meta: { title: '新建学习计划', keepAlive: true, requireAuth: true }
       }, {
         path: '/journal',
