@@ -19,13 +19,13 @@
               @click="routerLink(index, item.path)"
             >
               <!-- <span v-if="item.subNav"><router-link :to="item.path">{{ item.title }}</router-link></span> -->
-              <router-link :to="item.path">{{ item.title }}</router-link>
+              <router-link :to="{ path: item.path }">{{ item.title }}</router-link>
               <ul class="sub-li" v-if="item.subNav">
                 <li
                   v-for="(sub, i) in item.subNav"
                   :key="i"
                 >
-                  <router-link :to="sub.path">{{ sub.title }}</router-link>
+                  <router-link :to="{ path: sub.path }">{{ sub.title }}</router-link>
                 </li>
               </ul>
             </li>
@@ -51,9 +51,9 @@ export default {
       nav: [
         { title: '首页', path: '/home' },
         { title: '日记', path: '/journal', subNav: [{ title: '新建日记', path: '/journal/update' }] },
-        { title: '学习', path: '/learn', subNav: [{ title: '新建学习计划', path: 'learn/update' }] },
+        { title: '学习', path: '/learn', subNav: [{ title: '新建学习计划', path: '/learn/update' }] },
         { title: '游记', path: '/travels' },
-        { title: '消费', path: '/fee', subNav: [{ title: '消费统计', path: 'fee/static' }] }
+        { title: '消费', path: '/fee', subNav: [{ title: '消费统计', path: '/fee/static' }] }
       ],
       navIndex: 0
     }
