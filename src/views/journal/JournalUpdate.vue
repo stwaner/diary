@@ -64,9 +64,9 @@ import Editor from '../../components/in_editor/index.vue'
 import { journalDetail, saveJournal } from '@/api/journal'
 
 export default {
+  inject:['reload'],
   data () {
     return {
-      diaryId: this.$route.query.diaryId,
       journalObj: {},
       iconClasses: ['icon-rate-face-1', 'icon-rate-face-2', 'icon-rate-face-3'],
       ruleForm: {
@@ -85,9 +85,17 @@ export default {
       }
     }
   },
+  watch: {
+    '$route' (to, from) {
+      location.reload()
+    }
+  },
   computed: {
     userId () {
       return (JSON.parse(window.localStorage.getItem('userInfo'))).userId
+    },
+    diaryId () {
+      return this.$route.query.diaryId
     }
   },
   created () {

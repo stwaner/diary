@@ -3,7 +3,14 @@
     <div class="row">
       <div class="twelve columns header-wrap">
         <div class="global-search">
-          <el-input placeholder="全局搜索" />
+          <!-- <el-input @click="globalSerarch" placeholder="全局搜索" /> -->
+          <el-autocomplete
+            v-model="keywords"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="全局搜索"
+            @select="handleSelect"
+            @input="loadAll"
+          ></el-autocomplete>
         </div>
         <!-- <div class="logo">
           <router-link tag="a" :to="{path:'/home'}">
@@ -25,7 +32,7 @@
                   v-for="(sub, i) in item.subNav"
                   :key="i"
                 >
-                  <router-link :to="{ path: sub.path }">{{ sub.title }}</router-link>
+                  <a href="javascript:;" @click.stop="toPath(sub.path)">{{ sub.title }}</a>
                 </li>
               </ul>
             </li>
@@ -45,6 +52,7 @@
 
 <script>
 import { logout } from '@/api/login'
+import { searchWebsite } from '@/api/public'
 export default {
   data () {
     return {
@@ -55,7 +63,11 @@ export default {
         { title: '游记', path: '/travels' },
         { title: '消费', path: '/fee', subNav: [{ title: '消费统计', path: '/fee/static' }] }
       ],
-      navIndex: 0
+      navIndex: 0,
+      keywords: '',
+      restaurants: [],
+      state: '',
+      timeout:  null
     }
   },
   computed: {
@@ -63,9 +75,15 @@ export default {
       return (JSON.parse(window.localStorage.getItem('userInfo'))).nickName || this.$store.state.login.userInfo.userName
     }
   },
+  mounted() {
+    // this.loadAll()
+  },
   methods: {
     routerLink (index, path) {
       this.navIndex = index
+      this.$router.push(path)
+    },
+    toPath (path) {
       this.$router.push(path)
     },
     handleLogOut () {
@@ -78,6 +96,65 @@ export default {
         })
         done()
       }).catch(_ => {})
+    },
+    loadAll() {
+      searchWebsite({ keywords: this.keywords }).then(res => {
+        this.restaurants = res.data
+      })
+    },
+    querySearchAsync(queryString, cb) {
+      var restaurants = this.restaurants
+      // var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+      var results = queryString ? this.formatterData(restaurants) : []
+
+      clearTimeout(this.timeout)
+      this.timeout = setTimeout(() => {
+        cb(results)
+      }, 1000 * Math.random())
+    },
+    formatterData (data) {
+      return data.map(item => {
+        if (item.keywords) {
+          return {
+            'value' : item.keywords,
+            'id': item.relationId,
+            'tableId': item.relationTable
+          }
+        }
+      })
+    },
+    createStateFilter(queryString) {
+      return (state) => {
+        return (state.keywords.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      }
+    },
+    handleSelect(item) {
+      /**
+       * 1：日记
+       * 2：消费
+       * 3：学习
+       * 4：游记
+       */
+      console.log(item)
+      let routerLink = ''
+      switch (item.tableId) {
+        case 1:
+          routerLink = '/journal/update';
+          this.$router.push({ path: routerLink, query: { diaryId : item.id } });
+          break;
+        case 2:
+          routerLink = '/fee';
+          this.$router.push({ path: routerLink, query: { cid : item.id } });
+          break;
+        case 3:
+          routerLink = '/learn/update';
+          this.$router.push({ path: routerLink, query: { learnId : item.id } })
+          break;
+        case 4:
+          routerLink = '/travels/detail';
+          this.$router.push({ path: routerLink, query: { travelId : item.id } })
+          break;
+      }
     }
   }
 }

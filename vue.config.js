@@ -182,7 +182,7 @@ module.exports = {
     proxy: {
       '/api': { // 带上api前缀的
         // target: 'http://139.199.126.30:8080/', //代理目标地址
-        target: 'http://daily.zhuyelong.cn/', // 代理目标地址
+        target: 'http://ai.zhuyelong.cn/', // 代理目标地址
         changeOrigin: true,
         logLevel: 'debug' // 控制台打印真是请求地址
         // secure: false, //如果是https，需要加此参数

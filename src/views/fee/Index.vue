@@ -64,13 +64,14 @@
 </template>
 
 <script>
-import { findCostList, saveCost } from '@/api/cost'
+import { findCostList, getCostDetail, saveCost } from '@/api/cost'
 import feeModal from './components/feeModal.vue'
 export default {
   data () {
     return {
       costObj: null,
       keywords: '',
+      cid: this.$route.query.cid,
       stripe:true,//是否为斑马纹 table
       tableData: [],
       page: {
@@ -84,7 +85,11 @@ export default {
   },
   components: { feeModal },
   created () {
-    this.init()
+    if (this.cid) {
+      this.getDetailById()
+    } else {
+      this.init()
+    }
   },
   methods: {
     async init () {
@@ -97,6 +102,14 @@ export default {
         this.total = res.adds.count
         this.tableData = res.data
       }
+    },
+    getDetailById () {
+      getCostDetail({ cid: this.cid }).then(res=>{
+        if (res.code === 200) {
+          this.total = 1
+          this.tableData.push(res.data)
+        }
+      })
     },
     handleSizeChange(val) {
       this.page.length = val
