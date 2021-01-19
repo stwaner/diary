@@ -109,6 +109,11 @@ export default {
       }
     }
   },
+  watch: {
+    '$route' (to, from) {
+      location.reload()
+    }
+  },
   computed: {
     userId () {
       return (JSON.parse(window.localStorage.getItem('userInfo'))).userId

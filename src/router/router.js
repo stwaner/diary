@@ -47,12 +47,12 @@ const routes = [
         component: () => import('@/views/travels/map.vue'),
         meta: { title: '地图', keepAlive: true, requireAuth: true }
       }, {
-        path: 'fee',
+        path: '/fee',
         name: 'Fee',
         component: () => import('@/views/fee/Index.vue'),
         meta: { title: '消费列表', keepAlive: true, requireAuth: true }
       }, {
-        path: 'fee/static',
+        path: '/fee/static',
         name: 'feeStatic',
         component: () => import('@/views/fee/FeeStatic.vue'),
         meta: { title: '消费统计', keepAlive: true, requireAuth: true }
