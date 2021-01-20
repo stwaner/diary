@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { findCostList, getCostDetail, saveCost } from '@/api/cost'
+import { findCostList, getCostDetail } from '@/api/cost'
 import feeModal from './components/feeModal.vue'
 export default {
   data () {
@@ -72,13 +72,13 @@ export default {
       costObj: null,
       keywords: '',
       cid: this.$route.query.cid,
-      stripe:true,//是否为斑马纹 table
+      stripe: true, // 是否为斑马纹 table
       tableData: [],
       page: {
         pageNo: 1,
         length: 10
       },
-      total:0,
+      total: 0,
       title: '',
       feeVisible: false
     }
@@ -93,7 +93,7 @@ export default {
   },
   methods: {
     async init () {
-      let data = {}
+      const data = {}
       data.keywords = this.keywords
       data['page.pageNo'] = this.page.pageNo
       data['page.length'] = this.page.length
@@ -104,34 +104,34 @@ export default {
       }
     },
     getDetailById () {
-      getCostDetail({ cid: this.cid }).then(res=>{
+      getCostDetail({ cid: this.cid }).then(res => {
         if (res.code === 200) {
           this.total = 1
           this.tableData.push(res.data)
         }
       })
     },
-    handleSizeChange(val) {
+    handleSizeChange (val) {
       this.page.length = val
       this.init()
     },
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       this.page.pageNo = val
       this.init()
     },
-    indexMethod(index) {
+    indexMethod (index) {
       return index + 1
     },
     handleClickAdd () {
       this.title = '新增消费记录'
       this.feeVisible = true
     },
-    handleEdit(row) {
+    handleEdit (row) {
       this.title = '编辑消费记录'
       this.costObj = row
       this.feeVisible = true
     },
-    handleSearch() {
+    handleSearch () {
       this.init()
     },
     handleFeeOk () {

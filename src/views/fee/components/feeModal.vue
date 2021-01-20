@@ -53,10 +53,10 @@ export default {
       },
       rules: {
         costContext: [
-          { required: true, message: '请输入消费内容', trigger: 'blur' },
+          { required: true, message: '请输入消费内容', trigger: 'blur' }
         ],
         costMoney: [
-          { required: true, message: '请输入消费金额', trigger: 'blur' },
+          { required: true, message: '请输入消费金额', trigger: 'blur' }
           // { type: 'number', message: '消费金额必须为数字值'}
         ]
       },
@@ -112,28 +112,28 @@ export default {
       this.inputVisible = false
       this.inputValue = ''
     },
-    submitForm(formName) {
+    submitForm (formName) {
       const _this = this
       this.$refs[formName].validate(async (valid) => {
         if (valid) {
-          let data = {}
-          data.userId = this.userId
-          data.costContext = this.form.costContext
-          data.costMoney = this.form.costMoney
-          data.tag = this.dynamicTags.join(',')
+          const data = {}
+          data.userId = _this.userId
+          data.costContext = _this.form.costContext
+          data.costMoney = _this.form.costMoney
+          data.tag = _this.dynamicTags.join(',')
           let msg = ''
-          if (this.costObj) {
-            data.costId = this.costObj.costId
+          if (_this.costObj) {
+            data.costId = _this.costObj.costId
             msg = '修改成功'
           } else {
             msg = '添加成功'
           }
           const res = await saveCost(data)
           if (res.code === 200) {
-            this.$message.success(msg)
-            this.$emit('ok')
+            _this.$message.success(msg)
+            _this.$emit('ok')
           } else {
-            this.$message.error(res.msg)
+            _this.$message.error(res.msg)
           }
         } else {
           console.log('error submit!!')

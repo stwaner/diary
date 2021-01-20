@@ -67,7 +67,7 @@ export default {
       keywords: '',
       restaurants: [],
       state: '',
-      timeout:  null
+      timeout: null
     }
   },
   computed: {
@@ -75,7 +75,7 @@ export default {
       return (JSON.parse(window.localStorage.getItem('userInfo'))).nickName || this.$store.state.login.userInfo.userName
     }
   },
-  mounted() {
+  mounted () {
     // this.loadAll()
   },
   methods: {
@@ -94,15 +94,15 @@ export default {
             this.$router.push({ path: '/login' })
           }
         })
-        done()
+        // done()
       }).catch(_ => {})
     },
-    loadAll() {
+    loadAll () {
       searchWebsite({ keywords: this.keywords }).then(res => {
         this.restaurants = res.data
       })
     },
-    querySearchAsync(queryString, cb) {
+    querySearchAsync (queryString, cb) {
       var restaurants = this.restaurants
       // var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
       var results = queryString ? this.formatterData(restaurants) : []
@@ -116,44 +116,43 @@ export default {
       return data.map(item => {
         if (item.keywords) {
           return {
-            'value' : item.keywords,
-            'id': item.relationId,
-            'tableId': item.relationTable
+            value: item.keywords,
+            id: item.relationId,
+            tableId: item.relationTable
           }
         }
       })
     },
-    createStateFilter(queryString) {
+    createStateFilter (queryString) {
       return (state) => {
-        return (state.keywords.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        return (state.keywords.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
       }
     },
-    handleSelect(item) {
+    handleSelect (item) {
       /**
        * 1：日记
        * 2：消费
        * 3：学习
        * 4：游记
        */
-      console.log(item)
       let routerLink = ''
       switch (item.tableId) {
         case 1:
-          routerLink = '/journal/update';
-          this.$router.push({ path: routerLink, query: { diaryId : item.id } });
-          break;
+          routerLink = '/journal/update'
+          this.$router.push({ path: routerLink, query: { diaryId: item.id } })
+          break
         case 2:
-          routerLink = '/fee';
-          this.$router.push({ path: routerLink, query: { cid : item.id } });
-          break;
+          routerLink = '/fee'
+          this.$router.push({ path: routerLink, query: { cid: item.id } })
+          break
         case 3:
-          routerLink = '/learn/update';
-          this.$router.push({ path: routerLink, query: { learnId : item.id } })
-          break;
+          routerLink = '/learn/update'
+          this.$router.push({ path: routerLink, query: { learnId: item.id } })
+          break
         case 4:
-          routerLink = '/travels/detail';
-          this.$router.push({ path: routerLink, query: { travelId : item.id } })
-          break;
+          routerLink = '/travels/detail'
+          this.$router.push({ path: routerLink, query: { travelId: item.id } })
+          break
       }
     }
   }

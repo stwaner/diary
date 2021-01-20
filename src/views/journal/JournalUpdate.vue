@@ -64,7 +64,7 @@ import Editor from '../../components/in_editor/index.vue'
 import { journalDetail, saveJournal } from '@/api/journal'
 
 export default {
-  inject:['reload'],
+  inject: ['reload'],
   data () {
     return {
       journalObj: {},
@@ -140,7 +140,7 @@ export default {
         if (valid) {
           const data = {}
           data.userId = this.$store.state.login.userInfo.userId || this.userId
-          data.dialyDate = this.ruleForm.dialyDate.replaceAll("-","/")
+          data.dialyDate = this.ruleForm.dialyDate.replaceAll('-', '/')
           data.mood = this.ruleForm.mood
           data.moodType = this.ruleForm.mood_type
           data.weatherType = this.ruleForm.weather_type

@@ -77,12 +77,12 @@ export default {
           &.wx{
             background-position: center;
           }
-          &.qq {
+          &.qq{
             background-position: 0 0;
           }
         }
       }
-    } 
+    }
   }
 }
 @media (max-width: 768px){

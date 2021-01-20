@@ -6,7 +6,7 @@
 
 <script>
 
-import '@ckeditor/ckeditor5-build-classic/build/translations/zh-cn' //中文包
+import '@ckeditor/ckeditor5-build-classic/build/translations/zh-cn' // 中文包
 import CKEditor from '@ckeditor/ckeditor5-vue'
 // import ClassicEditor from '@/components/in_editor/core/ckeditor'
 
@@ -14,13 +14,13 @@ import CKEditor from '@ckeditor/ckeditor5-vue'
 
 // ⚠️ NOTE: We don't use @ckeditor/ckeditor5-build-classic any more!
 // Since we're building CKEditor from source, we use the source version of ClassicEditor.
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 
-import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
-import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials'
+import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold'
+import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic'
+import LinkPlugin from '@ckeditor/ckeditor5-link/src/link'
+import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph'
 
 export default {
   name: 'ClassicEditor',
@@ -34,32 +34,31 @@ export default {
       default: '请输入内容'
     }
   },
-  data() {
+  data () {
     return {
       // 编辑器组件需要获取编辑器实例
       editor: ClassicEditor,
       editorData: '',
       editorConfig: {
         plugins: [
-            EssentialsPlugin,
-            BoldPlugin,
-            ItalicPlugin,
-            LinkPlugin,
-            ParagraphPlugin
+          EssentialsPlugin,
+          BoldPlugin,
+          ItalicPlugin,
+          LinkPlugin,
+          ParagraphPlugin
         ],
-
         toolbar: {
-            items: [
-                'bold',
-                'italic',
-                'link',
-                'undo',
-                'redo'
-            ]
+          items: [
+            'bold',
+            'italic',
+            'link',
+            'undo',
+            'redo'
+          ]
         },
         language: 'zh-cn',
         // 可以控制编辑器的提示文本
-        placeholder: this.placeholder,
+        placeholder: this.placeholder
       }
     }
   },
@@ -68,7 +67,6 @@ export default {
       if (!this.editor) {
         return
       }
-      
       // 外部内容发生变化时，将新值赋予编辑器
       if (val && val !== this.editorData) {
         this.editorData = this.value
@@ -81,7 +79,7 @@ export default {
       }
     }
   },
-  created() {
+  created () {
     // 编辑器组件创建时将外部传入的值直接赋予编辑器
     this.editorData = this.value
   },
@@ -92,12 +90,12 @@ export default {
   mounted () {
   },
   methods: {
-    onReady( editor )  {
-        // Insert the toolbar before the editable area.
-        editor.ui.getEditableElement().parentElement.insertBefore(
-            editor.ui.view.toolbar.element,
-            editor.ui.getEditableElement()
-        );
+    onReady (editor) {
+      // Insert the toolbar before the editable area.
+      editor.ui.getEditableElement().parentElement.insertBefore(
+        editor.ui.view.toolbar.element,
+        editor.ui.getEditableElement()
+      )
     }
   }
 }
