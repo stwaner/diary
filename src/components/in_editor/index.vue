@@ -73,9 +73,12 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 .ck-editor__editable{
   min-height: 350px;
   max-height: 500px;
+  p{
+    line-height: 25px;
+  }
 }
 </style>

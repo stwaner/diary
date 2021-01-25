@@ -63,6 +63,9 @@ export default {
     &:last-child{
      margin-bottom: 0;
     }
+    p{
+      line-height: 25px;
+    }
     .title{
       font-weight: 500;
       font-size: 16px;
