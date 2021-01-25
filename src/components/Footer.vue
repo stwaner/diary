@@ -3,13 +3,13 @@
       <div class="row">
          <div class="twelve columns">
             <ul class="footer-nav">
-					<li><a href="#">Home.</a></li>
-              	<li><a href="#">Blog.</a></li>
-              	<li><a href="#">Portfolio.</a></li>
-              	<li><a href="#">About.</a></li>
-              	<li><a href="#">Contact.</a></li>
+               <li><a href="#">Home.</a></li>
+               <li><a href="#">Blog.</a></li>
+               <li><a href="#">Portfolio.</a></li>
+               <li><a href="#">About.</a></li>
+               <li><a href="#">Contact.</a></li>
                <li><a href="#">Features.</a></li>
-			   </ul>
+            </ul>
             <ul class="copyright">
                <li>Design by <a href="#">zhuyelong</a></li>
             </ul>
@@ -102,8 +102,8 @@ footer{
 }
 
 #go-top {
-	position: fixed;
-	bottom: 0px;
+   position: fixed;
+   bottom: 0px;
    right: 25px;
    display: none;
    a {

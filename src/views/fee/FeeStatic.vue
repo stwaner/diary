@@ -73,21 +73,20 @@ export default {
     this.drawChart()
   },
   methods: {
-    drawChart() {
-      let _this = this
+    drawChart () {
+      const _this = this
       // 基于准备好的dom，初始化echarts实例
-      _this.myChart = this.$echarts.init(document.getElementById("echarts"))
+      _this.myChart = this.$echarts.init(document.getElementById('echarts'))
       // 指定图表的配置项和数据
-      let option = {
+      const option = {
         title: {
-          text: "消费统计图"
+          text: '消费统计图'
         },
         tooltip: {
           trigger: 'axis',
           // axisPointer: {            // 坐标轴指示器，坐标轴触发有效
           //   type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
           // },
-          trigger: 'axis',
           axisPointer: {
             type: 'cross',
             crossStyle: {
@@ -97,10 +96,10 @@ export default {
         },
         toolbox: {
           feature: {
-            dataView: {show: true, readOnly: false},
-            magicType: {show: true, type: ['line', 'bar']},
-            restore: {show: true},
-            saveAsImage: {show: true}
+            dataView: { show: true, readOnly: false },
+            magicType: { show: true, type: ['line', 'bar'] },
+            restore: { show: true },
+            saveAsImage: { show: true }
           }
         },
         xAxis: {
@@ -117,19 +116,19 @@ export default {
         },
         series: [
           {
-            name: "消费金额",
-            type: "bar",
+            name: '消费金额',
+            type: 'bar',
             data: []
           }
         ]
-      };
+      }
       // 使用刚指定的配置项和数据显示图表。
       _this.myChart.setOption(option)
     },
     async getCostList () {
-      let data = {}
+      const data = {}
       data.timeType = this.timeType
-      if (this.timeType == 3) { // 周统计需要选择年份
+      if (this.timeType === 3) { // 周统计需要选择年份
         data.thisYear = this.weekYear
       }
       const res = await costSumClassify(data)
@@ -137,12 +136,12 @@ export default {
         this.timeList = []
         this.moneyList = []
         const data = res.data
-        if (data.length == 0) {
+        if (data.length === 0) {
           this.$message.info('没有查询到该条件的统计数据，换换别的吧~')
           return
         }
         data.forEach((item, index) => {
-          if (item && index!==data.length-1) {
+          if (item && index !== data.length - 1) {
             this.timeList.push(item.timeStr)
             this.moneyList.push(item.sumMoney)
             // 填入数据

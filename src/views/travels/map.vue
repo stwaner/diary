@@ -11,7 +11,6 @@
 import AMap from 'AMap' // 引入高德地图
 import { SelfLocation } from '../amap/location'
 import { saveTravel } from '../../api/travel'
-import { getProvinceList, getCityList } from '@/api/public'
 import travelModal from './components/travelModal.vue'
 
 export default {
@@ -88,7 +87,7 @@ export default {
         _this.map.setZoomAndCenter(4, [108.946609, 34.262324])
       }, 3)
     },
-    submitForm(formdata) {
+    submitForm (formdata) {
       const data = {}
       data.userId = this.$store.state.login.userInfo.userId || this.userId
       data.longitude = this.lnglat[0]
@@ -97,13 +96,13 @@ export default {
       data.travelNote = formdata.note
       data.provinceCode = formdata.addressCode[0] ? formdata.addressCode[0] : this.provinceCode
       data.cityCode = formdata.addressCode[1] ? formdata.addressCode[1] : this.cityCode
-      console.log(data)
       saveTravel(data).then(res => {
         if (res.code === 200) {
-          var marker = new AMap.Marker({
+          const marker = new AMap.Marker({
             map: this.map,
             position: this.contextMenuPositon // 基点位置
           })
+          console.log(marker)
           this.dialogVisible = false
           this.$emit('updateData')
         }
@@ -208,14 +207,14 @@ export default {
             _this.provinceCode = item.provinceCode
             return true
           }
-          if (i!==0) {
-            if (Math.abs(cityCode - item.cityCode) >= Math.abs(cityCode - cityList[i-1].cityCode)) {
+          if (i !== 0) {
+            if (Math.abs(cityCode - item.cityCode) >= Math.abs(cityCode - cityList[i - 1].cityCode)) {
               const maincity = ['11', '12', '31', '50']
               if (maincity.indexOf(cityCode.substring(0, 2)) === -1) { // 如果没有直辖市
-                cityCode = cityList[i-1].cityCode.substring(0, 4)
-                _this.cityCode = cityList[i-1].cityCode
+                cityCode = cityList[i - 1].cityCode.substring(0, 4)
+                _this.cityCode = cityList[i - 1].cityCode
               }
-              _this.provinceCode = cityList[i-1].provinceCode
+              _this.provinceCode = cityList[i - 1].provinceCode
               return true
             }
           }

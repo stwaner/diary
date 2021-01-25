@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-Vue.use(Vuex)
-
 import login from './modules/login'
 import location from './modules/location'
+Vue.use(Vuex)
+
 export default new Vuex.Store({
   modules: {
     login,

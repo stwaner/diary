@@ -1,18 +1,18 @@
 // 格式化省市
-export function listConvertTree(provinces, cities) {
+export function listConvertTree (provinces, cities) {
   let root = null
-  let list = []
+  const list = []
   if (provinces && provinces.length) {
     provinces.forEach(item => {
       root = { children: [] }
       if (item.provinceCode !== null && item.provinceCode !== undefined) {
-        root.label =  item.provinceName
-        root.value =  item.provinceCode
+        root.label = item.provinceName
+        root.value = item.provinceCode
         cities.forEach(city => {
-          if (city.cityCode && city.provinceCode  === item.provinceCode) {
+          if (city.cityCode && city.provinceCode === item.provinceCode) {
             root.children.push({
-              label : city.cityName,
-              value : city.cityCode
+              label: city.cityName,
+              value: city.cityCode
             })
           }
         })

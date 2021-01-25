@@ -27,7 +27,7 @@ import { register, getCode } from '@/api/login'
 export default {
   name: 'Register',
   data () {
-    const reg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
+    const reg = /^([a-zA-Z0-9]+[_|_|.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|_|.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/
     var validateEmail = (reule, value, callback) => {
       if (!reg.test(this.ruleForm.email)) {
         callback(new Error('请输入正确的邮箱格式'))

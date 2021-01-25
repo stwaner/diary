@@ -23,7 +23,7 @@ export default {
     }
   },
   watch: {
-    addressCode() {
+    addressCode () {
       this.defaultValue = this.addressCode ? this.addressCode : []
     }
   },
@@ -37,7 +37,7 @@ export default {
     }
   },
   methods: {
-    handleChange(value) {
+    handleChange (value) {
       this.$emit('hasChange', value)
     }
   }

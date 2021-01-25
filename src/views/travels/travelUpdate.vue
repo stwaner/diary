@@ -73,7 +73,7 @@ import { traveDetail, saveTravel } from '@/api/travel.js'
 import { SelfLocation } from '../amap/location'
 import Editor from '../../components/in_editor/index.vue'
 import citySelect from '@/components/CitySelect.vue'
-
+import AMap from 'AMap'
 export default {
   data () {
     return {
@@ -126,7 +126,7 @@ export default {
       this.center = [116.38725, 39.84999]
       setTimeout(() => {
         this.init()
-      }, 100);
+      }, 100)
     }
   },
   components: { citySelect, Editor },
@@ -149,19 +149,17 @@ export default {
         })
         // 将创建的点标记添加到已有的地图实例：
         _this.map.add(marker)
-        console.log(_this.map,'-----------------------')
         marker.on('dragend', _this.markerDraged)
       })
     },
-    handleAvatarSuccess(res, file) {
-      console.log(res)
+    handleAvatarSuccess (res, file) {
       this.ruleForm.travelImg = URL.createObjectURL(file.raw)
       this.fileId = res.fileId
     },
     handleAvatarError (err, file, fileList) {
       this.$message.error(err)
     },
-    beforeAvatarUpload(file) {
+    beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg'
       const isLt10M = file.size / 1024 / 1024 < 10
       if (!isJPG) {
@@ -174,7 +172,7 @@ export default {
     },
     markerDraged (e) {
       const lnglat = e.lnglat
-      this.center = [ lnglat.lng, lnglat.lat]
+      this.center = [lnglat.lng, lnglat.lat]
     },
     handleChange (value) {
       this.travelObj.provinceCode = value[0]

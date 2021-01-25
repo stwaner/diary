@@ -61,10 +61,10 @@ export default {
     }
   },
   methods: {
-    handleChange(value) {
+    handleChange (value) {
       this.form.addressCode = [value[0], value[1]]
     },
-    submitForm(formName) {
+    submitForm (formName) {
       const _this = this
       this.$refs[formName].validate((valid) => {
         if (valid) {
