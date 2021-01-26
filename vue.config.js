@@ -2,6 +2,7 @@ const path = require('path')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 // const CKEditorWebpackPlugin = require('@ckeditor/ckeditor5-dev-webpack-plugin')
 const { styles } = require('@ckeditor/ckeditor5-dev-utils')
+const webpack = require('webpack')
 
 function resolve (dir) {
   return path.join(__dirname, dir)
@@ -80,15 +81,6 @@ module.exports = {
     }
   },
   configureWebpack: (config) => {
-    // plugins: [
-    //   // CKEditor needs its own plugin to be built using webpack.
-    //   new CKEditorWebpackPlugin({
-    //     // See https://ckeditor.com/docs/ckeditor5/latest/features/ui-language.html
-    //     language: 'en',
-    //     // Append translations to the file matching the `app` name.
-    //     translationsOutputFile: /app/
-    //   })
-    // ]
     config.externals = {
       AMap: 'AMap' // 高德地图配置
     }
@@ -136,9 +128,30 @@ module.exports = {
       Object.assign(config, {
         optimization
       })
+      return {
+        plugins: [
+          new webpack.ProvidePlugin({
+            $:"jquery",
+            jQuery:"jquery",
+            "windows.jQuery":"jquery"
+          })
+        ]
+      }
     } else {
       // 为开发环境修改配置...
       config.mode = 'development'
+      new webpack.DefinePlugin({
+        __DEV__: true
+      })
+      return {
+        plugins: [
+          new webpack.ProvidePlugin({
+            $:"jquery",
+            jQuery:"jquery",
+            "windows.jQuery":"jquery"
+          })
+        ]
+      }
     }
     Object.assign(config, {
       // 开发生产共同配置
@@ -152,8 +165,8 @@ module.exports = {
   // css相关配置
   css: {
     // extract: true, // 是否使用css分离插件 ExtractTextPlugin
-    sourceMap: false, // 开启 CSS source maps?
-    requireModuleExtension: false, // 启用 CSS modules for all css / pre-processor files.
+    // sourceMap: false, // 开启 CSS source maps?
+    // requireModuleExtension: false, // 启用 CSS modules for all css / pre-processor files.
     // css预设器配置项 详见https://cli.vuejs.org/zh/config/#css-loaderoptions
     loaderOptions: {
       sass: {

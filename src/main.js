@@ -1,16 +1,15 @@
 import Vue from 'vue'
 import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
 import App from './App.vue'
 import axios from 'axios'
 import VueRouter from 'vue-router'
 import router from './router/index.js'
 import store from './store'
+import 'element-ui/lib/theme-chalk/index.css'
+import $ from 'jquery'
+import './assets/fonts/style.css'
+import './assets/css/base.css'
 // import echarts from 'echarts'
-// import './assets/fonts/style.css'
-// import './assets/css/base.css'
-import './assets/css/layout.css'
-import './assets/css/default.css' // 为何不生效
 // import element from './element/index'
 // Vue.use(element)
 

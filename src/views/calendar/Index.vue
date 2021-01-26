@@ -222,7 +222,7 @@ export default {
     background-color: #F2F8FE;
   }
   .calen-text{
-    padding: 2px 5px;
+    padding: 6px 5px;
     margin-bottom: 8px;
     box-shadow: 2px 2px 2px #ededed;
     background: #fff;

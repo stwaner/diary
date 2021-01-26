@@ -106,6 +106,9 @@ export default {
         padding-top: 18px;
       }
     }
+    pre p{
+      line-height: 24px;
+    }
     .entry-header {
       position: relative;
       margin-bottom: 6px;
