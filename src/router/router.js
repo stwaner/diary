@@ -74,6 +74,11 @@ const routes = [
         name: 'Register',
         component: resolve => require(['@/views/user/Register.vue'], resolve),
         meta: { title: '注册', keepAlive: true }
+      }, {
+        path: 'photoLogin',
+        name: 'PhotoLogin',
+        component: resolve => require(['@/views/user/PhotoLogin.vue'], resolve),
+        meta: { title: '人像登录', keepAlive: true }
       }
     ]
   }, {
