@@ -82,6 +82,7 @@ export default {
   created () {
     // 编辑器组件创建时将外部传入的值直接赋予编辑器
     this.editorData = this.value
+    alert($("#editor"))
   },
   components: {
     // 编辑器组件的局部注册方式

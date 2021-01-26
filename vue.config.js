@@ -81,13 +81,6 @@ module.exports = {
     }
   },
   configureWebpack: (config) => {
-    // config.plugins = [
-    //   new webpack.ProvidePlugin({
-    //     $: "jquery",
-    //     jQuery: "jquery",
-    //     "windows.jQuery": "jquery"
-    //   })
-    // ]
     config.externals = {
       AMap: 'AMap' // 高德地图配置
     }
@@ -135,9 +128,30 @@ module.exports = {
       Object.assign(config, {
         optimization
       })
+      return {
+        plugins: [
+          new webpack.ProvidePlugin({
+            $:"jquery",
+            jQuery:"jquery",
+            "windows.jQuery":"jquery"
+          })
+        ]
+      }
     } else {
       // 为开发环境修改配置...
       config.mode = 'development'
+      new webpack.DefinePlugin({
+        __DEV__: true
+      })
+      return {
+        plugins: [
+          new webpack.ProvidePlugin({
+            $:"jquery",
+            jQuery:"jquery",
+            "windows.jQuery":"jquery"
+          })
+        ]
+      }
     }
     Object.assign(config, {
       // 开发生产共同配置
