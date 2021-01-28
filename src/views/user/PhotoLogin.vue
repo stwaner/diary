@@ -1,13 +1,15 @@
 <template>
   <div class="tracking">
-    <video id="video" width="318" height="270" preload autoplay loop muted></video>
+    <video id="video" width="318" height="300" preload autoplay loop muted></video>
     <canvas id="canvas" width="318" height="270" ></canvas>
-    <img :src="dataUrl" alt="" id="img1">
-    <div class="buttonDiv">
-      <el-button type="primary" @click="submit">上传照片</el-button>
-      <el-button type="primary" @click="openCamera">点击拍照</el-button>
+    <div style="text-align:center;">
+      <img :src="dataUrl" alt="" id="img1">
     </div>
-    {{x}} - {{y}}
+    <div class="buttonDiv">
+      <el-button type="primary" @click="openCamera">重新拍照</el-button>
+    </div>
+    x: {{x}} - y: {{y}}<br/>
+    w: {{w}} - h: {{h}}
   </div>
 </template>
 
@@ -34,7 +36,7 @@ export default {
   },
   methods: {
     openCamera () {
-      let tipFlag = false // 是否检测
+      let tipFlag = true // 是否检测
       let faceflag = false // 是否进行拍照
       const _this = this
       var video = document.getElementById('video')
@@ -47,50 +49,42 @@ export default {
       tracker.setEdgesDensity(0.1)
       // 启动摄像头初始化
       this.trackerTask = window.tracking.track('#video', tracker, { camera: true })
-      console.log(tracker)
       // 创建监听 每帧都会触发
       tracker.on('track', function (event) {
-        console.log(event)
         context.clearRect(0, 0, canvas.width, canvas.height)
-        if (!tipFlag) {
+        if (tipFlag) {
           if (event.data.length === 0) {
             // 未检测到人脸
-            if (!faceflag) {
-              console.log('未检测到人脸')
-            }
+            context.fillText('未检测到人脸', 150, 15)
           } else if (event.data.length === 1) { // 长度为多少代表检测到几张人脸
             // 检测到一张人脸
-            if (!tipFlag) {
-              console.log('识别成功，正在拍照，请勿乱动~')
-              // 给检测到的人脸绘制矩形
-              event.data.forEach(function (rect) {
-                console.log(rect)
-                context.font = '11px Helvetica'
-                // context.fillText('已识别到人脸', 100, 40)
-                context.strokeStyle = '#ff0000'
-                context.strokeRect(rect.x, rect.y, rect.width, rect.height)
-                _this.x = rect.x
-                _this.y = rect.y
-                _this.w = rect.width
-                _this.h = rect.height
-              })
-              if (!faceflag) { // 检测到人脸进行拍照，延迟两秒
-                faceflag = true
-                setTimeout(() => {
-                  this.submit() // 拍照
-                  tipFlag = true
-                }, 2000)
-              }
+            // 给检测到的人脸绘制矩形
+            event.data.forEach(function (rect) {
+              faceflag = true
+              context.font = '11px Helvetica'
+              context.fillText('已识别到人脸', 150, 15)
+              context.strokeStyle = '#ff4d4f'
+              context.strokeRect(rect.x, rect.y, rect.width, rect.height) // 绘制矩形
+              _this.x = rect.x
+              _this.y = rect.y
+              _this.w = rect.width
+              _this.h = rect.height
+            })
+            if (faceflag) { // 检测到人脸进行拍照，延迟两秒
+              tipFlag = false
+              faceflag = false
+              _this.$message.info('正在拍照，请勿乱动~')
+              setTimeout(() => {
+                _this.submit() // 拍照
+              }, 2000)
             }
           } else {
             // 检测到多张人脸
-            if (!faceflag) {
-              console.log('只可一人进行人脸识别！')
-            }
+            _this.$message.info('只可一人进行人脸识别！')
+            return
           }
         }
       })
-      console.log(222)
     },
     submit () {
       const that = this
@@ -98,12 +92,14 @@ export default {
       const context = canvas.getContext('2d')
       const video = document.getElementById('video')
       setTimeout(function () {
-        context.drawImage(video, (that.x + that.w), (that.y + that.h), (that.x + that.w), (that.y + that.h), (that.x), that.y, (that.w), (that.h))
+        // context.drawImage(video, (that.x + that.w), (that.y + that.h), (that.x + that.w), (that.y + that.h), (that.x), that.y, (that.w), (that.h))
+        context.drawImage(video, (that.x + that.w), (that.y + that.h),  (that.x + that.w), (that.y + that.h), 0, 0,  (that.x + that.w), (that.y + that.h))
+        // context.drawImage(video, that.x, that.y,  120, 120, 0, 0, 120, 120)
         const dataUrl = canvas.toDataURL('image/png')
-        console.log(dataUrl)
+        console.log('dataUrl----', dataUrl)
         that.dataUrl = dataUrl
       }, 1000)
-      context.drawImage(video, 0, 0, 500, 400)
+      // context.drawImage(video, 0, 0, 500, 400)
       canvas.toBlob((blob) => {
         console.log(blob)
         // axios.post({ faceUrl: URL.createObjectURL(blob) }).then(res => {
@@ -202,24 +198,25 @@ export default {
 </script>
 
 <style lang="scss">
-video{
-  position: fixed;
-  left: 0;
-  top: 0;
-  // width: 20%;
-  border: 1px solid;
-}
 .tracking {
   width: 100%;
-  text-align: center;
   position: relative;
+  video{
+    position: relative;
+    margin-left: 40px;
+  }
+  canvas{
+    position: absolute;
+    left: 40px;
+    top: 0;
+  }
   .buttonDiv {
     bottom: 10px;
+    text-align: center;
   }
   img{
     display: inline-block;
-    // width: 100px;
-    // height: 100px;
+    max-width: 120px;
     margin-bottom: 20px;
     border: 1px solid #ededed;
   }
