@@ -10,9 +10,9 @@ import $ from 'jquery'
 import common from './utils/common.js' // 引入公共js
 import './assets/fonts/style.css'
 import './assets/css/base.css'
-require('tracking/build/tracking-min.js')
-require('tracking/build/data/face-min.js')
-require('tracking/examples/assets/stats.min.js')
+// require('tracking/build/tracking-min.js')
+// require('tracking/build/data/face-min.js')
+// require('tracking/examples/assets/stats.min.js')
 // import echarts from 'echarts'
 
 // 按需引入 引入 ECharts 主模块
