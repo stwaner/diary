@@ -21,11 +21,11 @@
           <el-checkbox v-model="isRember">记住我</el-checkbox>
         </div>
       </div>
-      <el-divider content-position="center">第三方账号登录</el-divider>
+      <el-divider content-position="center">其他方式登录</el-divider>
       <div class="third-auth">
-        <a title="用钉钉登录" class="dt" href="javascript:;"></a>
-        <a title="用微信账户登录" class="wx" href="javascript:;"></a>
-        <a title="用QQ账户登录" class="qq" href="javascript:;"></a>
+        <a title="人脸登录" class="dt" href="javascript:;" @click="toPhotoLogin"></a>
+        <a title="微信账户登录" class="wx" href="javascript:;"></a>
+        <a title="QQ账户登录" class="qq" href="javascript:;"></a>
       </div>
     </el-form>
   </div>
@@ -40,8 +40,8 @@ export default {
     return {
       isRember: false,
       ruleForm: {
-        loginName: '2219431784@qq.com',
-        password: '123456'
+        loginName: '',
+        password: ''
       },
       rules: {
         loginName: [
@@ -54,6 +54,9 @@ export default {
     }
   },
   methods: {
+    toPhotoLogin () {
+      this.$router.push({path: '/user/photoLogin'})
+    },
     submitForm () {
       const _this = this
       _this.$refs.loginForm.validate(async (valid) => {

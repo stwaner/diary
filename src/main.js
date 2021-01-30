@@ -7,11 +7,13 @@ import router from './router/index.js'
 import store from './store'
 import 'element-ui/lib/theme-chalk/index.css'
 import $ from 'jquery'
+import common from './utils/common.js' // 引入公共js
 import './assets/fonts/style.css'
 import './assets/css/base.css'
+// require('tracking/build/tracking-min.js')
+// require('tracking/build/data/face-min.js')
+// require('tracking/examples/assets/stats.min.js')
 // import echarts from 'echarts'
-// import element from './element/index'
-// Vue.use(element)
 
 // 按需引入 引入 ECharts 主模块
 var echarts = require('echarts/lib/echarts')
@@ -22,8 +24,6 @@ require('echarts/lib/chart/bar')
 require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
 
-// 引入公共js
-import common from './utils/common.js'
 Vue.prototype.common = common
 
 Vue.config.productionTip = false
