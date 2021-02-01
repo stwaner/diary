@@ -45,6 +45,14 @@
           >
           </el-switch>
         </el-form-item>
+         <el-form-item label="完成否">
+          <el-switch
+            v-model="form.completed"
+            :active-value="1"
+            :inactive-value="0"
+          >
+          </el-switch>
+        </el-form-item>
         <el-form-item label="提醒时间" prop="remindTime" v-if="form.remind">
           <el-date-picker
             clearable
@@ -88,6 +96,7 @@ export default {
         eventContext: undefined,
         timeCost: undefined,
         remind: false,
+        computed: false,
         remindTime: undefined
       },
       rules: { // 表单校验
